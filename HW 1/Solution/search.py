@@ -125,29 +125,38 @@ def depthFirstSearch(problem):
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
+
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-     startState = problem.getStartState()
-     visitedNodes = []
-     fringe = util.Queue()
-     cost = 0 
-     
-     if (problem.isGoalState(currentState) == True ):
-         return [] # No Specific Actions
-     else :
-         fringe.push((startState , [] , cost ))
-         while ( fringe.isEmpty() == False ):
-             currentState , actions , cost = fringe.pop()
-             visitedNodes.append(currentState)
-             if ( problem.isGoalState(currentState) == True ):
-                 return actions
-             else:
-                 if ( (currentState in visitedNodes) == False ):
-                     currentNodeSuccessors = problem.getSuccessors(currentState)
-                     for node in currentNodeSuccessors :
-                         if(not node in visitedNodes):
-                             state , action , cost = node 
-                             fringe.push((state , actions + [action] , cost ))
+    startState = problem.getStartState()
+    visitedNodes = []
+    fringe = util.Queue()
+    cost = 0 
+    
+    if (problem.isGoalState(startState) == True ):
+        return [] # No Specific Actions
+    else :
+        fringe.push((startState , [] , cost ))
+        while ( fringe.isEmpty() == False ):
+            currentState , actions , cost = fringe.pop()
+            """ get the latest node in the Queue """
+            
+            if ( problem.isGoalState(currentState) == True ): 
+                """ check if the node is our goal or not """
+                #print("We Reached Goal")
+                #print("Final Path : " + str(actions))
+                return actions
+            else:
+                if ( (currentState in visitedNodes) == False ):  
+                    """ check if this node is alreay visited or needs to be extended ? """
+                    visitedNodes.append(currentState)
+                    currentNodeSuccessors = problem.getSuccessors(currentState)
+                    for node in currentNodeSuccessors :
+                        if(not node in visitedNodes):
+                            state , action , cost = node 
+                            if ( not state in visitedNodes):
+                                fringe.push((state , actions + [action] , cost ))
+        
     util.raiseNotDefined()
 
 def uniformCostSearch(problem):

@@ -167,6 +167,10 @@ class Queue:
     def isEmpty(self):
         "Returns true if the queue is empty"
         return len(self.list) == 0
+    
+    def size(self):
+        """ returns the number of items in the queue """
+        return len(self.list)
 
 class PriorityQueue:
     """
