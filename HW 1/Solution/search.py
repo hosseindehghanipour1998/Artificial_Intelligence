@@ -18,6 +18,11 @@ Pacman agents (in searchAgents.py).
 """
 
 import util
+from game import Directions
+s = Directions.SOUTH
+w = Directions.WEST
+n = Directions.NORTH
+e = Directions.EAST
 
 class SearchProblem:
     """
@@ -81,12 +86,42 @@ def depthFirstSearch(problem):
 
     To get started, you might want to try some of these simple commands to
     understand the search problem that is being passed in:
-
+        
     print "Start:", problem.getStartState()
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
+    #util.raiseNotDefined()
+    #print("Hello Hossein")
+    startState = problem.getStartState();
+    visitedNodes = []
+    actions = []
+    fringe = util.Stack()
+    cost = 0 
+    #print("Start State : "  , startState);
+    if (problem.isGoalState(startState)):#if startState is the goalState
+        return actions
+    else :
+        # Data Type Format : (currentState,actions,cost) based on errors I got ;\
+        fringe.push((startState,actions,cost))
+        while (fringe.isEmpty() == False) :
+            currentState , actions , cost = fringe.pop()
+            #print("Current State : " + str(currentState))
+            #print(actions)
+            if(problem.isGoalState(currentState)):
+                return actions
+            
+            elif ((currentState in visitedNodes) == False ):
+                visitedNodes.append(currentState)
+                currentNodeSuccessors = problem.getSuccessors(currentState)
+                #print("Current Node Successors : " + str(currentNodeSuccessors))
+                for node in currentNodeSuccessors :
+                    state , action , cost = node
+                    if ( (state in visitedNodes) == False ):
+                        newNode = (state , actions + [action] , cost)
+                        fringe.push(newNode)
+                    
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
