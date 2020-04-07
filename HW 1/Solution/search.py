@@ -94,13 +94,13 @@ def depthFirstSearch(problem):
     "*** YOUR CODE HERE ***"
     #util.raiseNotDefined()
     #print("Hello Hossein")
-    startState = problem.getStartState();
+    startState = problem.getStartState()
     visitedNodes = []
     actions = []
     fringe = util.Stack()
     cost = 0 
     #print("Start State : "  , startState);
-    if (problem.isGoalState(startState)):#if startState is the goalState
+    if (problem.isGoalState(startState) == True):#if startState is the goalState
         return actions
     else :
         # Data Type Format : (currentState,actions,cost) based on errors I got ;\
@@ -127,6 +127,27 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
+     startState = problem.getStartState()
+     visitedNodes = []
+     fringe = util.Queue()
+     cost = 0 
+     
+     if (problem.isGoalState(currentState) == True ):
+         return [] # No Specific Actions
+     else :
+         fringe.push((startState , [] , cost ))
+         while ( fringe.isEmpty() == False ):
+             currentState , actions , cost = fringe.pop()
+             visitedNodes.append(currentState)
+             if ( problem.isGoalState(currentState) == True ):
+                 return actions
+             else:
+                 if ( (currentState in visitedNodes) == False ):
+                     currentNodeSuccessors = problem.getSuccessors(currentState)
+                     for node in currentNodeSuccessors :
+                         if(not node in visitedNodes):
+                             state , action , cost = node 
+                             fringe.push((state , actions + [action] , cost ))
     util.raiseNotDefined()
 
 def uniformCostSearch(problem):
