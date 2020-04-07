@@ -196,10 +196,6 @@ def uniformCostSearch(problem):
                             newNode = state , actions + [action] , cost + stateCost
                             priority = cost + stateCost
                             fringe.push( newNode , priority )
-                            
-                    
-    
-    
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
