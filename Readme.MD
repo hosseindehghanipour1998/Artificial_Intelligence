@@ -4,7 +4,7 @@
 I have been studying Artificial Intelligence on different embedded systems and programming languages starting with Python. In this repository I would like to share the codes and projects in this area of my study. Feel free to try each code and also write your comments If you are willing to.
 
 # Table of Contents
-1. [Pacman](#pacman_project)
+1. [Pacman](Pacman Project.md)
 
 
 
