@@ -238,7 +238,6 @@ def aStarSearch(problem, heuristic=nullHeuristic):
             
     util.raiseNotDefined()
 
-
 # Abbreviations
 bfs = breadthFirstSearch
 dfs = depthFirstSearch
