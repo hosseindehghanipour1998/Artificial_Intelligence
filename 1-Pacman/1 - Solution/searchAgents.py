@@ -300,7 +300,7 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        return self.startingPosition
+        return (self.startingPosition,self.cornersWithFood)
         util.raiseNotDefined()
 
     def isGoalState(self, state):
@@ -310,7 +310,7 @@ class CornersProblem(search.SearchProblem):
         "*** YOUR CODE HERE ***"
         print("Len : " + str(len(self.cornersWithFood)))
         print("Corners : " + str(self.cornersWithFood))
-        if(len(self.cornersWithFood) == 0 ):
+        if(len(state[1]) == 0 ):
             return True
         return False
         util.raiseNotDefined()
@@ -337,20 +337,18 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
-            x,y = state 
+            x,y = state[0] 
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
             hitsWall = self.walls[nextx][nexty]
             nextCordinate = (nextx,nexty)
             if not hitsWall :
-                print("State:" + str(state))
-                if(nextCordinate in self.cornersWithFood):
-                    self.cornersWithFood.remove(nextCordinate)
-                successorItem = nextCordinate , action , 1
+                #print("State:" + str(state))
+                notVisitedCorners = state[1][:]
+                if(nextCordinate in notVisitedCorners):
+                    notVisitedCorners.remove(nextCordinate)
+                successorItem = (nextCordinate,notVisitedCorners) , action , 1
                 successors.append(successorItem)
-
-                            # Bookkeeping for display purposes
-      
         self._expanded += 1 # DO NOT CHANGE
         print(successors)
         return successors
