@@ -14,3 +14,6 @@ You can visit [UC Berkeley CS188 Intro to AI -- Course Materials](http://ai.berk
   - [BFS](https://github.com/hosseindehghanipour1998/Artificial_Intelligence/blob/4b1a35d2877568fb1e39d6833ab379e54a65f168/1-Pacman/1%20-%20Solution/search.py#L127)
   - [UCS](https://github.com/hosseindehghanipour1998/Artificial_Intelligence/blob/4b1a35d2877568fb1e39d6833ab379e54a65f168/1-Pacman/1%20-%20Solution/search.py#L162)
   - [A*](https://github.com/hosseindehghanipour1998/Artificial_Intelligence/blob/eb4e5b7bee5cd53ccb9ea83355744395156ee076/1-Pacman/1%20-%20Solution/search.py#L208)
+
+# Comparison Between Algorithms
+<img src= "" >
