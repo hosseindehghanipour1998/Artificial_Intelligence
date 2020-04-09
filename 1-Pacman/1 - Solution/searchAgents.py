@@ -289,7 +289,6 @@ class CornersProblem(search.SearchProblem):
         # in initializing the problem
         "*** YOUR CODE HERE ***"
         print("Iniitial State : " + str(self.startingPosition))
-        print("Walls : \n" + str(self.walls))
         self.cornersWithFood = []
         for corner in self.corners:
             if startingGameState.hasFood(*corner):
@@ -338,15 +337,15 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
-            x,y = state[0] 
+            x,y = state 
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
             hitsWall = self.walls[nextx][nexty]
             nextCordinate = (nextx,nexty)
             if not hitsWall :
-                #print("State:" + str(state))
-                if(state in self.cornersWithFood):
-                    self.cornersWithFood.remove(state)
+                print("State:" + str(state))
+                if(nextCordinate in self.cornersWithFood):
+                    self.cornersWithFood.remove(nextCordinate)
                 successorItem = nextCordinate , action , 1
                 successors.append(successorItem)
 
