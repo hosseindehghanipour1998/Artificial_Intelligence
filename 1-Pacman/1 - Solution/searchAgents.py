@@ -293,7 +293,6 @@ class CornersProblem(search.SearchProblem):
         for corner in self.corners:
             if startingGameState.hasFood(*corner):
                 self.cornersWithFood.append(corner)
-
     def getStartState(self):
         """
         Returns the start state (in your state space, not the full Pacman state
@@ -393,16 +392,18 @@ def cornersHeuristic(state, problem):
    
     def isConsistant(state , problem , currentHeuristic , goal):
         children = problem.getSuccessors(state)
+        status = True 
         #print(children)
         for node in children:
             childState = node[0][0]
             childCost = node[2]
             #print("child State : " + str(childState))
             childHeuristic = util.manhattanDistance(childState, goal)
+            print(" %s <=  : %s + %s"% (str(currentHeuristic)  ,str(childHeuristic) ,str(childCost)))
             if ( not (currentHeuristic <= childHeuristic + childCost) ):
-                return False
-        #print("Consistent")
-        return True
+                status =  False
+        print(status)
+        return status
 
         
     corners = problem.corners # These are the corner coordinates
@@ -419,7 +420,6 @@ def cornersHeuristic(state, problem):
         nextCorner,nextCornerCost = nextCornerFinder(currentState , unvisitedCorners)
         currentHeursitic = util.manhattanDistance(currentState, nextCorner)
         #if ( isConsistant(state , problem , currentHeursitic , nextCorner) == True):
-        print("min Bound: " + str(minimumBound))
         minimumBound += nextCornerCost
         currentState = nextCorner
         unvisitedCorners.remove(nextCorner)
