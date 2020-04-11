@@ -288,7 +288,7 @@ class CornersProblem(search.SearchProblem):
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
-        print("Iniitial State : " + str(self.startingPosition))
+        #print("Iniitial State : " + str(self.startingPosition))
         self.cornersWithFood = []
         for corner in self.corners:
             if startingGameState.hasFood(*corner):
@@ -308,8 +308,8 @@ class CornersProblem(search.SearchProblem):
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        print("Len : " + str(len(self.cornersWithFood)))
-        print("Corners : " + str(self.cornersWithFood))
+        #print("Len : " + str(len(self.cornersWithFood)))
+        #print("Corners : " + str(self.cornersWithFood))
         if(len(state[1]) == 0 ):
             return True
         return False
@@ -337,7 +337,9 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
+            #print(state)
             x,y = state[0] 
+            
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
             hitsWall = self.walls[nextx][nexty]
@@ -350,7 +352,7 @@ class CornersProblem(search.SearchProblem):
                 successorItem = (nextCordinate,notVisitedCorners) , action , 1
                 successors.append(successorItem)
         self._expanded += 1 # DO NOT CHANGE
-        print(successors)
+        #print(successors)
         return successors
 
     def getCostOfActions(self, actions):
@@ -380,10 +382,56 @@ def cornersHeuristic(state, problem):
     shortest path from the state to a goal of the problem; i.e.  it should be
     admissible (as well as consistent).
     """
+    def nextCornerFinder(currentState , univistedCorners):
+        if ( len(univistedCorners) == 0 ):
+            return None
+        allHeuristics = []
+        for corner in univistedCorners :
+            allHeuristics.append((util.manhattanDistance(currentState, corner),corner))
+        heuristic , nextCorner = min(allHeuristics) 
+        return nextCorner,heuristic
+   
+    def isConsistant(state , problem , currentHeuristic , goal):
+        children = problem.getSuccessors(state)
+        #print(children)
+        for node in children:
+            childState = node[0][0]
+            childCost = node[2]
+            #print("child State : " + str(childState))
+            childHeuristic = util.manhattanDistance(childState, goal)
+            if ( not (currentHeuristic <= childHeuristic + childCost) ):
+                return False
+        #print("Consistent")
+        return True
+
+        
     corners = problem.corners # These are the corner coordinates
+    #print("Corners :" + str(corners))
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
+    #print("Walls : " + str(walls))
 
     "*** YOUR CODE HERE ***"
+    unvisitedCorners = state[1][:]
+    currentState = state[0]
+    minimumBound = 0 
+    while (len(unvisitedCorners) > 0 ):
+        print("Len : " + str(len(unvisitedCorners)))
+        nextCorner,nextCornerCost = nextCornerFinder(currentState , unvisitedCorners)
+        currentHeursitic = util.manhattanDistance(currentState, nextCorner)
+        #if ( isConsistant(state , problem , currentHeursitic , nextCorner) == True):
+        print("min Bound: " + str(minimumBound))
+        minimumBound += nextCornerCost
+        currentState = nextCorner
+        unvisitedCorners.remove(nextCorner)
+    return minimumBound
+            
+        
+    
+        
+    
+    
+    
+    
     return 0 # Default to trivial solution
 
 class AStarCornersAgent(SearchAgent):

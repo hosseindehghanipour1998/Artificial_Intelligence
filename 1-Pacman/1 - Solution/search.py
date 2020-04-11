@@ -133,7 +133,6 @@ def breadthFirstSearch(problem):
     fringe = util.Queue()
     cost = 0     
     if (problem.isGoalState(startState) == True ):
-        print("Goal Goal Goal")
         return [] # No Specific Actions
     else :
         fringe.push((startState , [] , cost ))
@@ -143,8 +142,8 @@ def breadthFirstSearch(problem):
             
             if ( problem.isGoalState(currentState) == True ): 
                 """ check if the node is our goal or not """
-                print("We Reached Goal")
-                print("Final Path : " + str(actions))
+                #print("We Reached Goal")
+                #print("Final Path : " + str(actions))
                 return actions
             else:
                 if ( (currentState in visitedNodes) == False ):  
@@ -156,7 +155,7 @@ def breadthFirstSearch(problem):
                             state , action , cost = node 
                             if ( not state in visitedNodes):
                                 fringe.push((state , actions + [action] , cost ))
-                                print(str(actions + [action]))
+                                #print(str(actions + [action]))
         
     util.raiseNotDefined()
 
