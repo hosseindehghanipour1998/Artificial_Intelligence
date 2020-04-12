@@ -381,6 +381,8 @@ def cornersHeuristic(state, problem):
     shortest path from the state to a goal of the problem; i.e.  it should be
     admissible (as well as consistent).
     """
+    
+    
     def nextCornerFinder(currentState , univistedCorners):
         if ( len(univistedCorners) == 0 ):
             return None
@@ -405,16 +407,17 @@ def cornersHeuristic(state, problem):
         print(status)
         return status
 
-        
+       
     corners = problem.corners # These are the corner coordinates
     #print("Corners :" + str(corners))
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
     #print("Walls : " + str(walls))
 
     "*** YOUR CODE HERE ***"
-    unvisitedCorners = state[1][:]
+    corners = state[1][:]
     currentState = state[0]
-    minimumBound = 0 
+    minimumBound = 0
+    """
     while (len(unvisitedCorners) > 0 ):
         print("Len : " + str(len(unvisitedCorners)))
         nextCorner,nextCornerCost = nextCornerFinder(currentState , unvisitedCorners)
@@ -424,14 +427,36 @@ def cornersHeuristic(state, problem):
         currentState = nextCorner
         unvisitedCorners.remove(nextCorner)
     return minimumBound
-            
-        
+    """
+    def findMinManhattan(fromHere , allCorners , visitedCorners):
+        allManhattans = []
+        for corner in allCorners :
+            if( (not corner in visitedCorners) and (corner != fromHere)):
+                distance =  util.manhattanDistance(fromHere , corner)
+                allManhattans.append((distance,corner))
+        return min(allManhattans)
     
-        
-    
-    
-    
-    
+
+    allManhattansDistances = []
+    for corner in corners :
+        currentState = state[0]
+        unvisitedCorners = corners 
+        visitedCorners = []
+        sumManhattan = 0 
+        currentToCorner = util.manhattanDistance(currentState , corner)
+        sumManhattan += currentToCorner
+        currentState = corner
+        j = len(unvisitedCorners)
+        for anotherCorner in unvisitedCorners:
+            if( j > 1 ):
+                minDistance , chosenOne = findMinManhattan(currentState , unvisitedCorners , visitedCorners )
+                visitedCorners.append(currentState)
+                currentState = chosenOne
+                sumManhattan += minDistance
+                j -= 1  
+        allManhattansDistances.append(sumManhattan)
+    if(len(allManhattansDistances) > 0 ):        
+        return min(allManhattansDistances)
     return 0 # Default to trivial solution
 
 class AStarCornersAgent(SearchAgent):
