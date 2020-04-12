@@ -338,20 +338,17 @@ class CornersProblem(search.SearchProblem):
             "*** YOUR CODE HERE ***"
             #print(state)
             x,y = state[0] 
-            
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
             hitsWall = self.walls[nextx][nexty]
             nextCordinate = (nextx,nexty)
             if not hitsWall :
-                #print("State:" + str(state))
                 notVisitedCorners = state[1][:]
                 if(nextCordinate in notVisitedCorners):
                     notVisitedCorners.remove(nextCordinate)
                 successorItem = (nextCordinate,notVisitedCorners) , action , 1
                 successors.append(successorItem)
         self._expanded += 1 # DO NOT CHANGE
-        #print(successors)
         return successors
 
     def getCostOfActions(self, actions):
@@ -395,11 +392,9 @@ def cornersHeuristic(state, problem):
     def isConsistant(state , problem , currentHeuristic , goal):
         children = problem.getSuccessors(state)
         status = True 
-        #print(children)
         for node in children:
             childState = node[0][0]
             childCost = node[2]
-            #print("child State : " + str(childState))
             childHeuristic = util.manhattanDistance(childState, goal)
             print(" %s <=  : %s + %s"% (str(currentHeuristic)  ,str(childHeuristic) ,str(childCost)))
             if ( not (currentHeuristic <= childHeuristic + childCost) ):
@@ -551,6 +546,37 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
+    def findMinManhattan(fromHere , allCorners , visitedCorners):
+        allManhattans = []
+        for corner in allCorners :
+            if( (not corner in visitedCorners) and (corner != fromHere)):
+                distance =  util.manhattanDistance(fromHere , corner)
+                allManhattans.append((distance,corner))
+        return min(allManhattans)
+    
+    corners = foodGrid.asList()
+    allManhattansDistances = []
+    for corner in corners :
+        currentState = state[0]
+        unvisitedCorners = foodGrid.asList() 
+        visitedCorners = []
+        sumManhattan = 0 
+        currentToCorner = util.manhattanDistance(currentState , corner)
+        sumManhattan += currentToCorner
+        currentState = corner
+        j = len(unvisitedCorners)
+        for anotherCorner in unvisitedCorners:
+            if( j > 1 ):
+                minDistance , chosenOne = findMinManhattan(currentState , unvisitedCorners , visitedCorners )
+                visitedCorners.append(currentState)
+                currentState = chosenOne
+                sumManhattan += minDistance
+                j -= 1  
+        allManhattansDistances.append(sumManhattan)
+    if(len(allManhattansDistances) > 0 ):        
+        return min(allManhattansDistances)
+    return 0 # Default to trivial solution
+    
     return 0
 
 class ClosestDotSearchAgent(SearchAgent):
