@@ -582,7 +582,9 @@ def foodHeuristic(state, problem):
     if(len(allManhattansDistances) > 0 ):  
         return min(allManhattansDistances)
     return 0 # Default to trivial solution
+ 
     
+""" Q8 """
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
     def registerInitialState(self, state):
@@ -613,6 +615,8 @@ class ClosestDotSearchAgent(SearchAgent):
 
         "*** YOUR CODE HERE ***"
         util.raiseNotDefined()
+        
+
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """

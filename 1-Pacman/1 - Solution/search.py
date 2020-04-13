@@ -90,7 +90,7 @@ class Analyzer :
                         for successor in stateSuccessors :
                             successorState , action , cost = successor
                            # print(successorState)
-                           #print(nextGoal)
+                           # print(nextGoal)
                             sumOfManhattans += util.manhattanDistance(successorState[0],nextGoal)
                         currentStateManhattanDistance = util.manhattanDistance(state,nextGoal)
                         if ( currentStateManhattanDistance <= sumOfManhattans + 3):
@@ -330,9 +330,6 @@ def aStarSearch(problem, heuristic=nullHeuristic):
                 """Start :  Analyzer Properties """
                 analyzer = Analyzer(problem,actions)
                 analyzer.start()
-                
-                
-                #Analyzer.printData()
                 """End : Analyzer Properties """
                 return actions
             else:
