@@ -37,6 +37,7 @@ Good luck and happy searching!
 from game import Directions
 from game import Agent
 from game import Actions
+from search import Analyzer
 import util
 import time
 import search
@@ -545,6 +546,10 @@ def foodHeuristic(state, problem):
     problem.heuristicInfo['wallCount']
     """
     position, foodGrid = state
+    Analyzer.foodGridShit = foodGrid 
+    if ( Analyzer.X == 0 ):
+        Analyzer.foodCoordinates = foodGrid.asList()
+        Analyzer.X = 1
     "*** YOUR CODE HERE ***"
     def findMinManhattan(fromHere , allCorners , visitedCorners):
         allManhattans = []
@@ -553,6 +558,7 @@ def foodHeuristic(state, problem):
                 distance =  util.manhattanDistance(fromHere , corner)
                 allManhattans.append((distance,corner))
         return min(allManhattans)
+    
     
     corners = foodGrid.asList()
     allManhattansDistances = []
@@ -566,10 +572,10 @@ def foodHeuristic(state, problem):
         currentState = corner
         j = len(unvisitedCorners)
         for anotherCorner in unvisitedCorners:
-            if( j > 1 ):
-                minDistance , chosenOne = findMinManhattan(currentState , unvisitedCorners , visitedCorners )
+            if( j > 1 ):               
+                minDistance , chosenFood = findMinManhattan(currentState , unvisitedCorners , visitedCorners )
                 visitedCorners.append(currentState)
-                currentState = chosenOne
+                currentState = chosenFood
                 sumManhattan += minDistance
                 j -= 1  
         allManhattansDistances.append(sumManhattan)

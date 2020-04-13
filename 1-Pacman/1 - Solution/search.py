@@ -42,18 +42,28 @@ class Analyzer :
     @states : the states that exists in the path of pacman. These states are created by using start state of pacman and @coordinates
 
     """
+    foodCoordinates = []
+    X = 0
+    foodGridShit = None
     def __init__(self , problem , actions ):
         self.problem = problem
         self.startState = problem.getStartState()
         self.actions = actions
         self.coordinates = []
         self.states = []
+        self.path = []
+        
     #the double underscore __ means the method is private
+    def __findFoodOrdering(self):
+        for node in self.states :
+            if( (node in self.foodCoordinates) and (not node in self.path) ):
+                self.path.append(node)
+                
     def __createStates(self):
         for action in self.actions :
             vector = pacmanActions.directionToVector( action, pacmanrules.PACMAN_SPEED )
             self.coordinates.append(vector)
-        Analyzer.states.append(self.startState)
+        self.states.append(self.startState)
         for coordinate in self.coordinates:
             xCord , yCord = coordinate
             try:
@@ -66,15 +76,55 @@ class Analyzer :
             newState = (nextCordX,nextCordY)
             self.states.append(newState)
     
+    def __analyze(self):
+        for state in self.states :
+            if(len(self.path) > 0 ):
+                nextGoal = self.path[0]
+                if(state == nextGoal):
+                    self.path.remove(state)
+                    if(len(self.path) > 0 ):
+                        nextGoal = self.path[0]
+                        tempSearchState = state , Analyzer.foodGridShit
+                        stateSuccessors = self.problem.getSuccessors(tempSearchState)
+                        sumOfManhattans = 0 
+                        for successor in stateSuccessors :
+                            successorState , action , cost = successor
+                           # print(successorState)
+                           #print(nextGoal)
+                            sumOfManhattans += util.manhattanDistance(successorState[0],nextGoal)
+                        currentStateManhattanDistance = util.manhattanDistance(state,nextGoal)
+                        if ( currentStateManhattanDistance <= sumOfManhattans + 3):
+                            True
+                        else:
+                            return False
+        return True
     
-    def printData(self):
+    def __isConsistent(self):
+        isConsistent = self.__analyze()
+        if(isConsistent):
+            print("It's Consistent")
+            return True
+        print("Not Consistent")
+        return False
+    
+    def start(self):
+        print("========== Analyzer Data ============")
+        self.__createStates()
+        self.__findFoodOrdering()
+        self.__printData()
+        self.__isConsistent()
+        print("=======================")
+    
+    def __printData(self):
         print("Actions : " + str(self.actions))
         print("Cordinates : " + str(self.coordinates))
         print("States : " + str(self.states))
+        print("Food Coordinates : " + str(Analyzer.foodCoordinates))
+        print("Path: " + str(self.path))
         
     # Static functions of this class
-    #createStates = staticmethod(createStates)
-    #printData = staticmethod(printData)
+    # createStates = staticmethod(createStates)
+    # printData = staticmethod(printData)
 
 class SearchProblem:
     """
@@ -261,6 +311,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
     print("Processing...")
+    
     startState = problem.getStartState();
     fringe = util.PriorityQueue()
     costs = 0 
@@ -278,7 +329,9 @@ def aStarSearch(problem, heuristic=nullHeuristic):
                 #print("Final Actions : " + str(actions))       
                 """Start :  Analyzer Properties """
                 analyzer = Analyzer(problem,actions)
-
+                analyzer.start()
+                
+                
                 #Analyzer.printData()
                 """End : Analyzer Properties """
                 return actions
