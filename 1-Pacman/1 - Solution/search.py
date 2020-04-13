@@ -19,10 +19,47 @@ Pacman agents (in searchAgents.py).
 
 import util
 from game import Directions
+from pacman import Actions as pacmanActions
+from pacman import PacmanRules as pacmanrules
+
+
 s = Directions.SOUTH
 w = Directions.WEST
 n = Directions.NORTH
 e = Directions.EAST
+
+""" My OWN Class for Analyzing the Consistency of Heuristic used in A* Method """
+class Analyzer :
+    states = []
+    actions = []
+    coordinates = []
+    startState = (0,0)
+    problem = None
+    def createStates():
+        for action in Analyzer.actions :
+            vector = pacmanActions.directionToVector( action, pacmanrules.PACMAN_SPEED )
+            Analyzer.coordinates.append(vector)
+        
+        Analyzer.states.append(Analyzer.startState)
+        for coordinate in Analyzer.coordinates:
+            xCord , yCord = coordinate
+            try:
+                currentCordX , currentCordY = Analyzer.states[-1][0]  
+            except:
+                currentCordX , currentCordY = Analyzer.states[-1]
+            print(str(currentCordX) + "|" + str(currentCordY))
+            nextCordX = xCord + int(currentCordX)
+            nextCordY = yCord + int(currentCordY)
+            newState = (nextCordX,nextCordY)
+            Analyzer.states.append(newState)
+    def printData():
+        print("Actions : " + str(Analyzer.actions))
+        print("Cordinates : " + str(Analyzer.coordinates))
+        print("States : " + str(Analyzer.states))
+        
+        
+    createStates = staticmethod(createStates)
+    printData = staticmethod(printData)
 
 class SearchProblem:
     """
@@ -125,9 +162,10 @@ def depthFirstSearch(problem):
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
-
+    
     """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
+    "*** YOUR CODE HERE ***"  
+    print("Processing...")
     startState = problem.getStartState()
     visitedNodes = []
     fringe = util.Queue()
@@ -155,8 +193,7 @@ def breadthFirstSearch(problem):
                             state , action , cost = node 
                             if ( not state in visitedNodes):
                                 fringe.push((state , actions + [action] , cost ))
-                                #print(str(actions + [action]))
-        
+                                #print(str(actions + [action]))   
     util.raiseNotDefined()
 
 def uniformCostSearch(problem):
@@ -208,12 +245,17 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
+    # For Analyzing
+    Analyzer.problem = problem
+    Analyzer.startState = problem.getStartState()
+    #End of Analyzing
+    
+    print("Processing...")
     startState = problem.getStartState();
     fringe = util.PriorityQueue()
     costs = 0 
     visitedNodes = []
-    actions = []
-    
+    actions = [] 
     if ( problem.isGoalState(startState) == True):
         return actions
     else:
@@ -223,6 +265,12 @@ def aStarSearch(problem, heuristic=nullHeuristic):
             #f(x) = h(x) + g(x)
             currentState , actions , costs = fringe.pop()
             if ( problem.isGoalState(currentState) == True):
+                #print("Final Actions : " + str(actions))       
+                """Start :  Analyzer Properties """
+                Analyzer.actions = actions #Analyzer Class Attribute
+                Analyzer.createStates()
+                Analyzer.printData()
+                """End : Analyzer Properties """
                 return actions
             else:
                 if(not currentState in visitedNodes ):
@@ -234,8 +282,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
                         newFringeItem = state , actions + [action] , costs + stateCost
                         priority = costs + heuristicAmount
                         fringe.push( newFringeItem , priority )
-                        
-            
+                             
     util.raiseNotDefined()
 
 # Abbreviations

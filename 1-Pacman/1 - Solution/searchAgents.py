@@ -573,12 +573,10 @@ def foodHeuristic(state, problem):
                 sumManhattan += minDistance
                 j -= 1  
         allManhattansDistances.append(sumManhattan)
-    if(len(allManhattansDistances) > 0 ):        
+    if(len(allManhattansDistances) > 0 ):  
         return min(allManhattansDistances)
     return 0 # Default to trivial solution
     
-    return 0
-
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
     def registerInitialState(self, state):

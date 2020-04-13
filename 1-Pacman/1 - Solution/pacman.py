@@ -327,6 +327,7 @@ class PacmanRules:
     """
     PACMAN_SPEED=1
 
+
     def getLegalActions( state ):
         """
         Returns a list of possible actions.
