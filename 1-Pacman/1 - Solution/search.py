@@ -29,37 +29,52 @@ n = Directions.NORTH
 e = Directions.EAST
 
 """ My OWN Class for Analyzing the Consistency of Heuristic used in A* Method """
+
 class Analyzer :
-    states = []
-    actions = []
-    coordinates = []
-    startState = (0,0)
-    problem = None
-    def createStates():
-        for action in Analyzer.actions :
+    """
+    This class is implemented to check whether the path chosen by A* heuristic is consistent or not.
+    @actions : returned actions by A* method which then  will be converted to @corndinates
+
+    
+    @coordinates :  the tranlsateion of each action from @actions in cordinate form of (x,y) that determines which way to go.
+                    for example corrdinate:(-1,0) means that pacman should go one step to "west"
+    
+    @states : the states that exists in the path of pacman. These states are created by using start state of pacman and @coordinates
+
+    """
+    def __init__(self , problem , actions ):
+        self.problem = problem
+        self.startState = problem.getStartState()
+        self.actions = actions
+        self.coordinates = []
+        self.states = []
+    #the double underscore __ means the method is private
+    def __createStates(self):
+        for action in self.actions :
             vector = pacmanActions.directionToVector( action, pacmanrules.PACMAN_SPEED )
-            Analyzer.coordinates.append(vector)
-        
-        Analyzer.states.append(Analyzer.startState)
-        for coordinate in Analyzer.coordinates:
+            self.coordinates.append(vector)
+        Analyzer.states.append(self.startState)
+        for coordinate in self.coordinates:
             xCord , yCord = coordinate
             try:
-                currentCordX , currentCordY = Analyzer.states[-1][0]  
+                currentCordX , currentCordY = self.states[-1][0]  
             except:
-                currentCordX , currentCordY = Analyzer.states[-1]
-            print(str(currentCordX) + "|" + str(currentCordY))
+                currentCordX , currentCordY = self.states[-1]
+            #print(str(currentCordX) + "|" + str(currentCordY))
             nextCordX = xCord + int(currentCordX)
             nextCordY = yCord + int(currentCordY)
             newState = (nextCordX,nextCordY)
-            Analyzer.states.append(newState)
-    def printData():
-        print("Actions : " + str(Analyzer.actions))
-        print("Cordinates : " + str(Analyzer.coordinates))
-        print("States : " + str(Analyzer.states))
+            self.states.append(newState)
+    
+    
+    def printData(self):
+        print("Actions : " + str(self.actions))
+        print("Cordinates : " + str(self.coordinates))
+        print("States : " + str(self.states))
         
-        
-    createStates = staticmethod(createStates)
-    printData = staticmethod(printData)
+    # Static functions of this class
+    #createStates = staticmethod(createStates)
+    #printData = staticmethod(printData)
 
 class SearchProblem:
     """
@@ -245,11 +260,6 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    # For Analyzing
-    Analyzer.problem = problem
-    Analyzer.startState = problem.getStartState()
-    #End of Analyzing
-    
     print("Processing...")
     startState = problem.getStartState();
     fringe = util.PriorityQueue()
@@ -267,9 +277,9 @@ def aStarSearch(problem, heuristic=nullHeuristic):
             if ( problem.isGoalState(currentState) == True):
                 #print("Final Actions : " + str(actions))       
                 """Start :  Analyzer Properties """
-                Analyzer.actions = actions #Analyzer Class Attribute
-                Analyzer.createStates()
-                Analyzer.printData()
+                analyzer = Analyzer(problem,actions)
+
+                #Analyzer.printData()
                 """End : Analyzer Properties """
                 return actions
             else:
