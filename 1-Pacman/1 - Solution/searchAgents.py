@@ -380,7 +380,20 @@ def cornersHeuristic(state, problem):
     admissible (as well as consistent).
     """
     
+
+          
+    corners = problem.corners # These are the corner coordinates  
+    walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
     
+    #print("Walls : " + str(walls))
+    #print("Corners :" + str(corners))
+
+    "*** YOUR CODE HERE ***"
+    corners = state[1][:]
+    currentState = state[0]
+    minimumBound = 0
+    """
+        
     def nextCornerFinder(currentState , univistedCorners):
         if ( len(univistedCorners) == 0 ):
             return None
@@ -389,7 +402,8 @@ def cornersHeuristic(state, problem):
             allHeuristics.append((util.manhattanDistance(currentState, corner),corner))
         heuristic , nextCorner = min(allHeuristics) 
         return nextCorner,heuristic
-   
+    
+    
     def isConsistant(state , problem , currentHeuristic , goal):
         children = problem.getSuccessors(state)
         status = True 
@@ -402,18 +416,8 @@ def cornersHeuristic(state, problem):
                 status =  False
         print(status)
         return status
-
-       
-    corners = problem.corners # These are the corner coordinates
-    #print("Corners :" + str(corners))
-    walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
-    #print("Walls : " + str(walls))
-
-    "*** YOUR CODE HERE ***"
-    corners = state[1][:]
-    currentState = state[0]
-    minimumBound = 0
-    """
+    
+    
     while (len(unvisitedCorners) > 0 ):
         print("Len : " + str(len(unvisitedCorners)))
         nextCorner,nextCornerCost = nextCornerFinder(currentState , unvisitedCorners)
@@ -442,14 +446,14 @@ def cornersHeuristic(state, problem):
         currentToCorner = util.manhattanDistance(currentState , corner)
         sumManhattan += currentToCorner
         currentState = corner
-        j = len(unvisitedCorners)
+        unvisitedCornersLength = len(unvisitedCorners)
         for anotherCorner in unvisitedCorners:
-            if( j > 1 ):
+            if( unvisitedCornersLength > 1 ):
                 minDistance , chosenOne = findMinManhattan(currentState , unvisitedCorners , visitedCorners )
                 visitedCorners.append(currentState)
                 currentState = chosenOne
                 sumManhattan += minDistance
-                j -= 1  
+                unvisitedCornersLength -= 1  
         allManhattansDistances.append(sumManhattan)
     if(len(allManhattansDistances) > 0 ):        
         return min(allManhattansDistances)
@@ -546,10 +550,10 @@ def foodHeuristic(state, problem):
     problem.heuristicInfo['wallCount']
     """
     position, foodGrid = state
-    Analyzer.foodGridShit = foodGrid 
-    if ( Analyzer.X == 0 ):
+    Analyzer.foodGridMap = foodGrid 
+    if ( Analyzer.hasGatheredNeededData == False ):
         Analyzer.foodCoordinates = foodGrid.asList()
-        Analyzer.X = 1
+        Analyzer.hasGatheredNeededData = True
     "*** YOUR CODE HERE ***"
     def findMinManhattan(fromHere , allCorners , visitedCorners):
         allManhattans = []
@@ -570,14 +574,14 @@ def foodHeuristic(state, problem):
         currentToCorner = util.manhattanDistance(currentState , corner)
         sumManhattan += currentToCorner
         currentState = corner
-        j = len(unvisitedCorners)
+        unvisitedCornersLength = len(unvisitedCorners)
         for anotherCorner in unvisitedCorners:
-            if( j > 1 ):               
+            if( unvisitedCornersLength > 1 ):               
                 minDistance , chosenFood = findMinManhattan(currentState , unvisitedCorners , visitedCorners )
                 visitedCorners.append(currentState)
                 currentState = chosenFood
                 sumManhattan += minDistance
-                j -= 1  
+                unvisitedCornersLength -= 1  
         allManhattansDistances.append(sumManhattan)
     if(len(allManhattansDistances) > 0 ):  
         return min(allManhattansDistances)
@@ -615,7 +619,6 @@ class ClosestDotSearchAgent(SearchAgent):
 
         "*** YOUR CODE HERE ***"
         return search.bfs(problem)
-        
         util.raiseNotDefined()
         
 

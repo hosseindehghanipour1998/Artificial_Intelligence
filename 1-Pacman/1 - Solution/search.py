@@ -43,8 +43,8 @@ class Analyzer :
 
     """
     foodCoordinates = []
-    X = 0
-    foodGridShit = None
+    hasGatheredNeededData = False
+    foodGridMap = None
     def __init__(self , problem , actions ):
         self.problem = problem
         self.startState = problem.getStartState()
@@ -287,6 +287,7 @@ def uniformCostSearch(problem):
         while ( fringe.isEmpty() == False ):
             currentState , actions , cost = fringe.pop()
             if ( problem.isGoalState(currentState) == True ) :
+                #print("Final Path : " + str(actions))
                 return actions
             else :
                 if ( (currentState in visitedNodes) == False ):
@@ -326,10 +327,14 @@ def aStarSearch(problem, heuristic=nullHeuristic):
             #f(x) = h(x) + g(x)
             currentState , actions , costs = fringe.pop()
             if ( problem.isGoalState(currentState) == True):
-                #print("Final Actions : " + str(actions))       
+                #print("Final Actions : " + str(actions)) 
+                """
+                If you want the Analyzer Class analizes the chosen path and heuristic , 
+                Uncomment these two lines of code otherwise leave it be commented cause it increases the run time by 2 seconds.
+                """
                 """Start :  Analyzer Properties """
-                analyzer = Analyzer(problem,actions)
-                analyzer.start()
+                #analyzer = Analyzer(problem,actions)
+                #analyzer.start()
                 """End : Analyzer Properties """
                 return actions
             else:
