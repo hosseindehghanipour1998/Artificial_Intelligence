@@ -53,7 +53,6 @@ class Analyzer :
         self.states = []
         self.path = []
         
-    #the double underscore __ means the method is private
     def __findFoodOrdering(self):
         for node in self.states :
             if( (node in self.foodCoordinates) and (not node in self.path) ):
@@ -70,7 +69,6 @@ class Analyzer :
                 currentCordX , currentCordY = self.states[-1][0]  
             except:
                 currentCordX , currentCordY = self.states[-1]
-            #print(str(currentCordX) + "|" + str(currentCordY))
             nextCordX = xCord + int(currentCordX)
             nextCordY = yCord + int(currentCordY)
             newState = (nextCordX,nextCordY)
@@ -89,8 +87,6 @@ class Analyzer :
                         sumOfManhattans = 0 
                         for successor in stateSuccessors :
                             successorState , action , cost = successor
-                           # print(successorState)
-                           # print(nextGoal)
                             sumOfManhattans += util.manhattanDistance(successorState[0],nextGoal)
                         currentStateManhattanDistance = util.manhattanDistance(state,nextGoal)
                         if ( currentStateManhattanDistance <= sumOfManhattans + 3):
@@ -121,10 +117,6 @@ class Analyzer :
         print("States : " + str(self.states))
         print("Food Coordinates : " + str(Analyzer.foodCoordinates))
         print("Path: " + str(self.path))
-        
-    # Static functions of this class
-    # createStates = staticmethod(createStates)
-    # printData = staticmethod(printData)
 
 class SearchProblem:
     """
@@ -194,30 +186,24 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-    #util.raiseNotDefined()
-    #print("Hello Hossein")
     startState = problem.getStartState()
     visitedNodes = []
     actions = []
     fringe = util.Stack()
     cost = 0 
-    #print("Start State : "  , startState);
     if (problem.isGoalState(startState) == True):#if startState is the goalState
         return actions
     else :
-        # Data Type Format : (currentState,actions,cost) based on errors I got ;\
+        # Data Type Format : (currentState,actions,cost) based on errors I got :\
         fringe.push((startState,actions,cost))
         while (fringe.isEmpty() == False) :
             currentState , actions , cost = fringe.pop()
-            #print("Current State : " + str(currentState))
-            #print(actions)
             if(problem.isGoalState(currentState)):
                 return actions
             
             elif ((currentState in visitedNodes) == False ):
                 visitedNodes.append(currentState)
                 currentNodeSuccessors = problem.getSuccessors(currentState)
-                #print("Current Node Successors : " + str(currentNodeSuccessors))
                 for node in currentNodeSuccessors :
                     state , action , cost = node
                     if ( (state in visitedNodes) == False ):
@@ -230,7 +216,6 @@ def breadthFirstSearch(problem):
     
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"  
-    #print("Processing...")
     startState = problem.getStartState()
     visitedNodes = []
     fringe = util.Queue()
@@ -245,7 +230,6 @@ def breadthFirstSearch(problem):
             
             if ( problem.isGoalState(currentState) == True ): 
                 """ check if the node is our goal or not """
-                #print("We Reached Goal")
                 #print("Final Path : " + str(actions))
                 return actions
             else:
@@ -258,7 +242,7 @@ def breadthFirstSearch(problem):
                             state , action , cost = node 
                             if ( not state in visitedNodes):
                                 fringe.push((state , actions + [action] , cost ))
-                                #print(str(actions + [action]))   
+                                
     util.raiseNotDefined()
 
 def uniformCostSearch(problem):
@@ -311,8 +295,9 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    #print("Processing...")
-    
+    print("\t===========================================")
+    print("\t Processing ... Please Wait for 11 seconds!")
+    print("\t===========================================")
     startState = problem.getStartState();
     fringe = util.PriorityQueue()
     costs = 0 

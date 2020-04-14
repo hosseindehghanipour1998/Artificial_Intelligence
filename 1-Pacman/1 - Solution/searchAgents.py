@@ -266,7 +266,7 @@ def euclideanHeuristic(position, problem, info={}):
 #####################################################
 # This portion is incomplete.  Time to write code!  #
 #####################################################
-
+""" Q5 """
 class CornersProblem(search.SearchProblem):
     """
     This search problem finds paths through all four corners of a layout.
@@ -289,7 +289,6 @@ class CornersProblem(search.SearchProblem):
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
-        #print("Iniitial State : " + str(self.startingPosition))
         self.cornersWithFood = []
         for corner in self.corners:
             if startingGameState.hasFood(*corner):
@@ -308,8 +307,6 @@ class CornersProblem(search.SearchProblem):
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        #print("Len : " + str(len(self.cornersWithFood)))
-        #print("Corners : " + str(self.cornersWithFood))
         if(len(state[1]) == 0 ):
             return True
         return False
@@ -337,7 +334,6 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
-            #print(state)
             x,y = state[0] 
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
@@ -365,7 +361,7 @@ class CornersProblem(search.SearchProblem):
             if self.walls[x][y]: return 999999
         return len(actions)
 
-
+""" Q6 """
 def cornersHeuristic(state, problem):
     """
     A heuristic for the CornersProblem that you defined.
@@ -384,16 +380,11 @@ def cornersHeuristic(state, problem):
           
     corners = problem.corners # These are the corner coordinates  
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
-    
-    #print("Walls : " + str(walls))
-    #print("Corners :" + str(corners))
-
     "*** YOUR CODE HERE ***"
     corners = state[1][:]
     currentState = state[0]
     minimumBound = 0
-    """
-        
+    """    
     def nextCornerFinder(currentState , univistedCorners):
         if ( len(univistedCorners) == 0 ):
             return None
@@ -520,7 +511,7 @@ class AStarFoodSearchAgent(SearchAgent):
     def __init__(self):
         self.searchFunction = lambda prob: search.aStarSearch(prob, foodHeuristic)
         self.searchType = FoodSearchProblem
-
+""" Q7 """
 def foodHeuristic(state, problem):
     """
     Your heuristic for the FoodSearchProblem goes here.
@@ -621,8 +612,6 @@ class ClosestDotSearchAgent(SearchAgent):
         return search.bfs(problem)
         util.raiseNotDefined()
         
-
-
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
     A search problem for finding a path to any food.
