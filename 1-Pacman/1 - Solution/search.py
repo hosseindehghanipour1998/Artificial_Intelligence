@@ -230,7 +230,7 @@ def breadthFirstSearch(problem):
     
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"  
-    print("Processing...")
+    #print("Processing...")
     startState = problem.getStartState()
     visitedNodes = []
     fringe = util.Queue()
@@ -286,7 +286,7 @@ def uniformCostSearch(problem):
         fringe.push( newNode , priority )
         while ( fringe.isEmpty() == False ):
             currentState , actions , cost = fringe.pop()
-            if ( problem.isGoalState(currentState) == True ) : 
+            if ( problem.isGoalState(currentState) == True ) :
                 return actions
             else :
                 if ( (currentState in visitedNodes) == False ):
@@ -310,7 +310,7 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    print("Processing...")
+    #print("Processing...")
     
     startState = problem.getStartState();
     fringe = util.PriorityQueue()
