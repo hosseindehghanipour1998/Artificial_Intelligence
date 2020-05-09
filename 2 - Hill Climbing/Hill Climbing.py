@@ -17,6 +17,7 @@ x , y = sp.symbols('x y')
 # Libraries
 import sympy as sp
 from random import random
+from Writer import Writer
 ############################
 # Initializing Symbols
 pi = sp.pi 
@@ -26,15 +27,16 @@ x , y = sp.symbols('x y')
 f = (sp.sin(10*sp.pi*x)/(2*x)) + (x-1)**4 # change this function based on our own demand.
 lowerBoundry = 0.5
 upperBoundry = 2.5
+steps = 5 * 10**-3
 g = x**4 + 2*x**5 + 3*x + 2
 #############################################
-
+# Methods Implementation
 
 def calculateDifferenciation(f,order):
     derivatedFunction = f 
     for i in range(0,order):
         derivatedFunction = sp.diff(derivatedFunction)
-        print("Derivation [" + str(i) + "] : " + str(derivatedFunction))
+        #print("Derivation [" + str(i) + "] : " + str(derivatedFunction))
     return derivatedFunction
 
 def getRandom( lowerBound , upperBound ):
@@ -42,13 +44,29 @@ def getRandom( lowerBound , upperBound ):
     scaledValue = lowerBound + (value * (upperBound - lowerBound))
     return scaledValue
 
-#calculateDifferenciation(g,2)
-#print(g.subs(x,3))
-
 def hillClimbing(expr, lowerBoundry , upperBoundry):
+    w = Writer("results.txt")
+    w.clearFile()
     # "expr" is our function
-    difference = calculateDifferenciation(expr,1)
-    value = random()
-    print(value)
-    
-hillClimbing(f,lowerBoundry,upperBoundry)
+    dx = calculateDifferenciation(expr,1)
+    value = getRandom(lowerBoundry,upperBoundry)
+    slope = 1 if (dx.subs(x,value) > 0) else -1  
+    amount =  dx.subs(x,value)
+    derivationAmount = round(float(amount),1)
+    while (derivationAmount != 0.0 ):
+        if( slope > 0 ):
+            value -= steps
+        else :
+            value += steps
+
+        w.append(derivationAmount)
+        amount =  dx.subs(x,value)
+        derivationAmount = round(float(amount),1)
+
+    print("Done!")
+    return value
+
+##############################################
+print("Calculating:")   
+localOptima = hillClimbing(f,lowerBoundry,upperBoundry)
+print(localOptima)
