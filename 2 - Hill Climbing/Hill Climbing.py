@@ -34,7 +34,7 @@ lowerBoundry = 0.5
 upperBoundry = 2.5
 steps = 10**-4
 plotSteps = 5 * 10**-3
-numberOfSamples = 30
+numberOfSamples = 3
 g = x**4 + 2*x**5 + 3*x + 2
 #############################################
 # Methods Implementation
@@ -120,8 +120,31 @@ def iterativeHillClimbingPlot(f , lowerBound , upperBound , step , localOptimas 
              xy=(globalOptima[0],  globalOptima[1]), xytext=(-20, +80), annotation_clip=False, 
              textcoords="offset points", fontsize=16, 
              arrowprops=dict(arrowstyle="<-", connectionstyle="arc3,rad=.5"))
-        
     
+    
+    # naming the x axis 
+    plt.xlabel('x - axis') 
+    # naming the y axis 
+    plt.ylabel('y - axis') 
+    # giving a title to my graph 
+    plt.title("IHC : No. of samples : " + str(numberOfSamples) ) 
+    
+    saveFig(plt , "Plots/IHC_Plot_" , "Plots/figureNumber.txt" )
+    
+    
+
+   
+    
+def saveFig(plotPointer , figName , figNumbPath ):
+    # Figure Numbering
+    filerIO = Writer(figNumbPath)
+    lines = filerIO.readFile()
+    if ( len(lines) == 0 ):
+        filerIO.append(1) 
+        lines[0] = 1 
+    plotPointer.savefig( str(figName) + str(lines[0]) + '.png')
+    filerIO.clearFile()
+    filerIO.append(str(int(lines[0]) + 1) )    
 
 def plot(f,lowerBound,upperBound,target_x,step , plotTitle , arrowLabeling = True):
     # Draw the function
