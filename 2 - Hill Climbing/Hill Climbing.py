@@ -34,7 +34,7 @@ lowerBoundry = 0.5
 upperBoundry = 2.5
 steps = 10**-4
 plotSteps = 5 * 10**-3
-numberOfSamples = 3
+numberOfSamples = 30
 g = x**4 + 2*x**5 + 3*x + 2
 #############################################
 # Methods Implementation
