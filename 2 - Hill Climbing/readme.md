@@ -1,7 +1,22 @@
 # Hill Climbing
 
+## Project Files
+   - ___Plot Folders___ :  You can see all the plots saved into this folder.
+   - ___Results.txt___ : You can see the local optimas recognized by algorithms.
+
+## Sample Codes
+
+### Sympy
+```
+expr = x**3 + 4*x*y - z
+expr.subs([(x, 2), (y, 4), (z, 0)])
+expr.subs(x,2)
 
 
+x = sp.Symbol('x')
+x , y = sp.symbols('x y')
+
+```
 
 
 ## References
