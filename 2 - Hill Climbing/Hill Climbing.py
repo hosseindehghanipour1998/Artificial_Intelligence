@@ -4,25 +4,16 @@ Before Running the code you should install "sympy" by using this command :
 
 In order to use "matplot" to plot the curve :
     > pip install matplotlib
+
+Attentions :  In order to see the plots , go to the "plots" foder in this project.
 '''
 
-
-
-'''
-expr = x**3 + 4*x*y - z
-expr.subs([(x, 2), (y, 4), (z, 0)])
-expr.subs(x,2) 
-
-
-x = sp.Symbol('x')
-x , y = sp.symbols('x y')
-'''
 #*********************************************************************************
 # Libraries
 import sympy as sp
 from random import random
-from Writer import Writer
 import matplotlib.pyplot as plt
+from ExtraLibraries.Writer import Writer as Writer
 #*********************************************************************************
 # Initializing Symbols
 pi = sp.pi 
@@ -34,16 +25,16 @@ lowerBoundry = 0.5
 upperBoundry = 2.5
 steps = 10**-4
 plotSteps = 5 * 10**-3
-numberOfSamples = 25
+numberOfSamples = int(sp.Abs(upperBoundry - lowerBoundry) * 20)
 g = x**4 + 2*x**5 + 3*x + 2
+h = (sp.sin(2*x)/x) * (sp.cos(x**(sp.exp(1))) * sp.pi * sp.ln(2*x))
 #*********************************************************************************
-# Methods Implementation
-
+#*********************** Methods Implementation **********************************
+#*********************************************************************************
 def calculateDifferenciation(f,order):
     derivatedFunction = f 
     for i in range(0,order):
         derivatedFunction = sp.diff(derivatedFunction)
-        #print("Derivation [" + str(i) + "] : " + str(derivatedFunction))
     return derivatedFunction
 ###############################################################################
 def getRandom( lowerBound , upperBound ):
@@ -55,21 +46,18 @@ def iterativeHillClimbing(numberOfSamples):
     samples = []
     for i in range (0 , numberOfSamples ):
         value = getRandom(lowerBoundry,upperBoundry)
-        localOptimaCoordinates = hillClimbing(f,lowerBoundry,upperBoundry , value , None , False)
+        localOptimaCoordinates = hillClimbing(f,lowerBoundry,upperBoundry , value , None)
         samples.append(localOptimaCoordinates)
         print("Sample No : [" + str(i+1) + "]")
         
     globalOptima = findMinTuple(samples,1)
     print("Gloabl optima : " + str(globalOptima))
     return (globalOptima,samples)
- ###############################################################################       
+###############################################################################       
 def findMinTuple( data , keyIndex ):
     return min(data, key = lambda t: t[keyIndex])
 ###############################################################################
-def hillClimbing(expr, lowerBoundry , upperBoundry , randomValue , fileName , writeInFile = True):
-    if(writeInFile):
-        w = Writer(fileName + ".txt")
-        w.clearFile()
+def hillClimbing(expr, lowerBoundry , upperBoundry , randomValue , fileName):
     # "expr" is our function
     dx = calculateDifferenciation(expr,1)
     #value = getRandom(lowerBoundry,upperBoundry)
@@ -82,14 +70,9 @@ def hillClimbing(expr, lowerBoundry , upperBoundry , randomValue , fileName , wr
             value_X -= steps
         else :
             value_X += steps
-        if(writeInFile):
-            w.append(str(value_X) + " \t " + str(derivationAmount) )
         amount =  dx.subs(x,value_X)
         derivationAmount = round(float(amount),1)
-
-    print("Done!")
     value_Y = expr.subs(x,value_X)
-    
     value_X = round(float(value_X),2)
     value_Y = round(float(value_Y),2)
     return (value_X,value_Y)
@@ -124,22 +107,15 @@ def iterativeHillClimbingPlot(f , lowerBound , upperBound , step , localOptimas 
              arrowprops=dict(arrowstyle="<-", connectionstyle="arc3,rad=.5"))
     
     
-    # naming the x axis 
     plt.xlabel('x - axis') 
-    # naming the y axis 
     plt.ylabel('y - axis') 
-    # giving a title to my graph 
     plt.title("IHC : No. of samples : " + str(numberOfSamples) ) 
-    plt.legend() 
-    
+    plt.legend()    
     saveFig(plt , "Plots/IHC_Plot_" , "Plots/figureNumber.txt" )
-    
-    
-
-   
+    plt.show()
+       
 ############################################################################### 
 def saveFig(plotPointer , figName , figNumbPath ):
-    # Figure Numbering
     filerIO = Writer(figNumbPath)
     lines = filerIO.readFile()
     if ( len(lines) == 0 ):
@@ -149,8 +125,7 @@ def saveFig(plotPointer , figName , figNumbPath ):
     filerIO.clearFile()
     filerIO.append(str(int(lines[0]) + 1) )    
 ###############################################################################
-def plot(f,lowerBound,upperBound,target_x,step , plotTitle , arrowLabeling = True):
-    # Draw the function
+def plot(f,lowerBound,upperBound,target_x,step , plotTitle , arrowLabeling = True , arrowLabelingTitle = "x = " , scatterColor = "black" , scatterLabel = "Minima"):
     x_axis = []
     y_axis = []
     i = lowerBound 
@@ -159,16 +134,12 @@ def plot(f,lowerBound,upperBound,target_x,step , plotTitle , arrowLabeling = Tru
         y_axis.append(f.subs(x,i))
         i += step
     target_y = f.subs(x,target_x)
-   
-    # plotting the function points 
     plt.plot(x_axis, y_axis, label = "function")   
-    # plotting the taget(local optima) points 
-    #plt.plot(target_x, target_y, label = "Local Minima") 
-    plt.scatter(target_x, target_y, color="black")
+    plt.scatter(target_x, target_y,label = scatterLabel , color="black")
     if ( arrowLabeling  ):
-        plt.plot([0, target_x], [target_y, target_y], linestyle="--", color="black")
-        plt.plot([target_x, target_x], [target_y,0], linestyle="--", color="black")
-        plt.annotate(r"$ x = " + str(round(target_x,2)) + "$", 
+        plt.plot([0, target_x], [target_y, target_y], linestyle="--", color=scatterColor)
+        plt.plot([target_x, target_x], [target_y,0], linestyle="--", color=scatterColor)
+        plt.annotate(r"$ " + str(arrowLabelingTitle) + "  " + str(round(target_x,2)) + "$", 
                  xy=(target_x, target_y), xytext=(-20, +80), annotation_clip=False, 
                  textcoords="offset points", fontsize=16, 
                  arrowprops=dict(arrowstyle="<-", connectionstyle="arc3,rad=.5"))
@@ -179,30 +150,21 @@ def plot(f,lowerBound,upperBound,target_x,step , plotTitle , arrowLabeling = Tru
     # giving a title to my graph 
     plt.title(plotTitle) 
     # show a legend on the plot 
-    plt.legend()     
-    # function to show the plot 
-    plt.show() 
-#*********************************************************************************
-def sigmoid(alpha,beta):
-    numerated = 1 + sp.exp(alpha/beta) 
-    return 1/numerated
-#*********************************************************************************
-def T(x):
-    return 1/x
+    plt.legend()         
+    saveFig(plt,"Plots/" + str(plotTitle),"Plots/figureNumber.txt")
+    plt.show()
+
 #*********************************************************************************
 def simulatedAnnealing(f,lowerBoundry,upperBoundry):
-    simulatedAnnealingIO = Writer("SimulatedAnnealing.txt")
     current = getRandom(lowerBoundry,upperBoundry)
     deltaE = 0
-    t = 100000
+    tMax = 10**5
+    tMin = 0.05
+    steps = 0.99
+    t = tMax
     while True :
-        
-        print(t)
-        simulatedAnnealingIO.append(t)
-        #possibility = sigmoid(deltaE * -1 , t)
-        
         nextX = getRandom(lowerBoundry,upperBoundry)
-        if ( t <= 0.05 ):
+        if ( t <= tMin ):
             break
         deltaE = f.subs(x,nextX) - f.subs(x,current)
         possibility = sp.exp(deltaE/t)
@@ -212,50 +174,48 @@ def simulatedAnnealing(f,lowerBoundry,upperBoundry):
             rnd = getRandom(0,1)
             if(rnd > possibility):
                 current = nextX
-        t *= 0.99
+        t *= steps
     globalX = current
     globalY = f.subs(x,globalX)
     return (globalX,globalY)        
             
-#*********************************************************************************    
-##############################################
-##################### MAIN ###################
-##############################################
-
-######### Hill Climbing #####################
+###################################################### MAIN #########################################
     
 
-#print("Calculating:")   
-#value = getRandom(lowerBoundry,upperBoundry)
-#localX , localY = hillClimbing(f,lowerBoundry,upperBoundry , value , "HillClimbing" )
-#print("("+ str(localX) + "," +  str(localY) + ")")
-#plot(f,lowerBoundry,upperBoundry,localX,plotSteps,"Hill Climbing")
+## Hill Climbing ##
+print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+print("Calculating Hillclimbing")   
+value = getRandom(lowerBoundry,upperBoundry)
+HC_localX , HC_localY = hillClimbing(f,lowerBoundry,upperBoundry , value , "HillClimbing" )
+print("Local Minima : ("+ str(HC_localX) + "," +  str(HC_localY) + ")")
+plot(f,lowerBoundry,upperBoundry,HC_localX,plotSteps,"Hill Climbing")
 
 
-######### Iterative Hill Climbing #####################
-
-
-#
-#globalOptima , localOptimas = iterativeHillClimbing(numberOfSamples)
-#iterativeHillClimbingPlot(f,lowerBoundry , upperBoundry , plotSteps , localOptimas , globalOptima )
-#
-#IHC_Locals = Writer("IterativeHillClimbing_LocalOptimas.txt")
-#IHC_Locals.arrayToFile(localOptimas)
-
-
-
-############# Simulated Annealing ############
-
-
-print("Simulated Annealing:")  
-SA_global = simulatedAnnealing(f,lowerBoundry,upperBoundry)
-
-plot(f,lowerBoundry,upperBoundry,SA_global[0],plotSteps , "Simulated Annealing" , arrowLabeling = False)
+## Iterated Hill Climbing ##
+print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+print("Calculating Iterative Hill Climbing : ") 
+print("Number of Samples : " + str(numberOfSamples))
+IHC_GlobalOptima , IHC_LocalOptimas = iterativeHillClimbing(numberOfSamples)
+iterativeHillClimbingPlot(f,lowerBoundry , upperBoundry , plotSteps , IHC_LocalOptimas , IHC_GlobalOptima )
 
 
 
+## Simulated Annealing ##
 
+# Testing : f(x) 
+print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+print(" Simulated Annealing: \n Please Wait for 20 seconds ")  
+print("Processing ... " ) 
+SA_global_1 = simulatedAnnealing(f,lowerBoundry,upperBoundry)
+plot(f,lowerBoundry,upperBoundry,SA_global_1[0],plotSteps , "Simulated Annealing" , arrowLabeling = True,scatterColor="red", scatterLabel = "Global Minima")
 
+# Testing : h(x) 
+print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+print(" Simulated Annealing: \n Please Wait for 20 seconds ") 
+print("Processing ... " ) 
+SA_global_2 = simulatedAnnealing(h,0.5,5.4)
+plot(h,0.5,5.4,SA_global_2[0],plotSteps , "Simulated Annealing" , arrowLabeling = True , scatterColor="red" , scatterLabel = "Global Minima")
+################################################### End Of MAIN #########################################
 
 
 
