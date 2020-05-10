@@ -7,6 +7,7 @@ I order to use "matplot" to plot the curve :
 '''
 
 
+
 '''
 expr = x**3 + 4*x*y - z
 expr.subs([(x, 2), (y, 4), (z, 0)])
@@ -33,6 +34,7 @@ lowerBoundry = 0.5
 upperBoundry = 2.5
 steps = 10**-4
 plotSteps = 5 * 10**-3
+numberOfSamples = 30
 g = x**4 + 2*x**5 + 3*x + 2
 #############################################
 # Methods Implementation
@@ -49,33 +51,80 @@ def getRandom( lowerBound , upperBound ):
     scaledValue = lowerBound + (value * (upperBound - lowerBound))
     return scaledValue
 
-def iterativeHillClimbing():
-    
+def iterativeHillClimbing(numberOfSamples):
+    samples = []
+    for i in range (0 , numberOfSamples ):
+        value = getRandom(lowerBoundry,upperBoundry)
+        localOptimaCoordinates = hillClimbing(f,lowerBoundry,upperBoundry , value , None , False)
+        samples.append(localOptimaCoordinates)
+        print("Sample No : [" + str(i+1) + "]")
+        
+    globalOptima = findMinTuple(samples,1)
+    print("Gloabl optima : " + str(globalOptima))
+    return (globalOptima,samples)
+        
+def findMinTuple( data , keyIndex ):
+    return min(data, key = lambda t: t[keyIndex])
 
-def hillClimbing(expr, lowerBoundry , upperBoundry , randomValue):
-    w = Writer("results.txt")
-    w.clearFile()
+def hillClimbing(expr, lowerBoundry , upperBoundry , randomValue , fileName , writeInFile = True):
+    if(writeInFile):
+        w = Writer(fileName + ".txt")
+        w.clearFile()
     # "expr" is our function
     dx = calculateDifferenciation(expr,1)
     #value = getRandom(lowerBoundry,upperBoundry)
-    value = randomValue
-    slope = 1 if (dx.subs(x,value) > 0) else -1  
-    amount =  dx.subs(x,value)
+    value_X = randomValue
+    slope = 1 if (dx.subs(x,value_X) > 0) else -1  
+    amount =  dx.subs(x,value_X)
     derivationAmount = round(float(amount),1)
-    while (derivationAmount != 0.0 and value >= lowerBoundry and value <= upperBoundry ):
+    while (derivationAmount != 0.0 and value_X >= lowerBoundry and value_X <= upperBoundry ):
         if( slope > 0 ):
-            value -= steps
+            value_X -= steps
         else :
-            value += steps
-
-        w.append(str(value) + " \t " + str(derivationAmount) )
-        amount =  dx.subs(x,value)
+            value_X += steps
+        if(writeInFile):
+            w.append(str(value_X) + " \t " + str(derivationAmount) )
+        amount =  dx.subs(x,value_X)
         derivationAmount = round(float(amount),1)
 
     print("Done!")
-    return value
+    value_Y = expr.subs(x,value_X)
+    
+    value_X = round(float(value_X),2)
+    value_Y = round(float(value_Y),2)
+    return (value_X,value_Y)
 
-def plot(f,lowerBound,upperBound,target_x,step , plotTitle):
+def iterativeHillClimbingPlot(f , lowerBound , upperBound , step , localOptimas , globalOptima ):
+    # Draw the function
+    x_axis = []
+    y_axis = []
+    i = lowerBound 
+    while(i < upperBound):
+        x_axis.append(i)
+        y_axis.append(f.subs(x,i))
+        i += step
+    
+    # plotting the function points 
+    plt.plot(x_axis, y_axis, label = "function") 
+    
+    # Plotting Local Optimas
+    for item in localOptimas :
+        plt.scatter(item[0], item[1], color="black")
+        
+    # plottign global Optima
+    plt.scatter(globalOptima[0], globalOptima[1], color="red")
+    
+    plt.plot([0, globalOptima[0]], [ globalOptima[1],  globalOptima[1]], linestyle="--", color="red")
+    plt.plot([globalOptima[0], globalOptima[0]], [ globalOptima[1],0], linestyle="--", color="red")
+    plt.annotate(r"$ Global Optima" + "$", 
+             xy=(globalOptima[0],  globalOptima[1]), xytext=(-20, +80), annotation_clip=False, 
+             textcoords="offset points", fontsize=16, 
+             arrowprops=dict(arrowstyle="<-", connectionstyle="arc3,rad=.5"))
+        
+    
+
+def plot(f,lowerBound,upperBound,target_x,step , plotTitle , arrowLabeling = True):
+    # Draw the function
     x_axis = []
     y_axis = []
     i = lowerBound 
@@ -90,12 +139,13 @@ def plot(f,lowerBound,upperBound,target_x,step , plotTitle):
     # plotting the taget(local optima) points 
     #plt.plot(target_x, target_y, label = "Local Minima") 
     plt.scatter(target_x, target_y, color="black")
-    plt.plot([0, target_x], [target_y, target_y], linestyle="--", color="black")
-    plt.plot([target_x, target_x], [target_y,0], linestyle="--", color="black")
-    plt.annotate(r"$ x = " + str(round(target_x,2)) + "$", 
-             xy=(target_x, target_y), xytext=(-20, +80), annotation_clip=False, 
-             textcoords="offset points", fontsize=16, 
-             arrowprops=dict(arrowstyle="<-", connectionstyle="arc3,rad=.5"))
+    if ( arrowLabeling  ):
+        plt.plot([0, target_x], [target_y, target_y], linestyle="--", color="black")
+        plt.plot([target_x, target_x], [target_y,0], linestyle="--", color="black")
+        plt.annotate(r"$ x = " + str(round(target_x,2)) + "$", 
+                 xy=(target_x, target_y), xytext=(-20, +80), annotation_clip=False, 
+                 textcoords="offset points", fontsize=16, 
+                 arrowprops=dict(arrowstyle="<-", connectionstyle="arc3,rad=.5"))
     # naming the x axis 
     plt.xlabel('x - axis') 
     # naming the y axis 
@@ -108,9 +158,28 @@ def plot(f,lowerBound,upperBound,target_x,step , plotTitle):
     plt.show() 
     
 ##############################################
-    
+##################### MAIN ###################
+##############################################
+
+######### Hill Climbing #####################
 print("Calculating:")   
 value = getRandom(lowerBoundry,upperBoundry)
-localX = localOptima = hillClimbing(f,lowerBoundry,upperBoundry , value )
-print(localX)
-plot(f,lowerBoundry,upperBoundry,localX,plotSteps,"Hill Climbing')
+localX , localY = hillClimbing(f,lowerBoundry,upperBoundry , value , "HillClimbing" )
+print("("+ str(localX) + "," +  str(localY) + ")")
+plot(f,lowerBoundry,upperBoundry,localX,plotSteps,"Hill Climbing")
+######### Iterative Hill Climbing #####################
+
+globalOptima , localOptimas = iterativeHillClimbing(numberOfSamples)
+iterativeHillClimbingPlot(f,lowerBoundry , upperBoundry , plotSteps , localOptimas , globalOptima )
+
+IHC_Locals = Writer("IterativeHillClimbing_LocalOptimas.txt")
+IHC_Locals.arrayToFile(localOptimas)
+
+
+
+
+
+
+
+
+

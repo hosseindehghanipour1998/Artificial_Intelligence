@@ -60,10 +60,10 @@ class Writer :
 
 
     def arrayToFile(self,arr):
-        if(self.__fileExists(self.filePath) == False ):
+        if(self.__fileExists() == False ):
             self.__createFile(self.filePath)
         for item in arr :
-            self.append(item,self.filePath)
+            self.append(item)
 
 
     def getLen(self):
