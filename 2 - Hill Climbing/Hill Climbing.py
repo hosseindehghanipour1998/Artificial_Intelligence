@@ -2,7 +2,7 @@
 Before Running the code you should install "sympy" by using this command :
     > pip install sympy
 
-I order to use "matplot" to plot the curve :
+In order to use "matplot" to plot the curve :
     > pip install matplotlib
 '''
 
@@ -109,10 +109,12 @@ def iterativeHillClimbingPlot(f , lowerBound , upperBound , step , localOptimas 
     
     # Plotting Local Optimas
     for item in localOptimas :
-        plt.scatter(item[0], item[1], color="black")
+        plt.scatter(item[0], item[1], color="black" )
+    # Labeling Local Optimas
+    plt.scatter(item[0], item[1], color="black" , label = "Local Optimas")
         
     # plottign global Optima
-    plt.scatter(globalOptima[0], globalOptima[1], color="red")
+    plt.scatter(globalOptima[0], globalOptima[1], color="red" , label = "Global Optima")
     
     plt.plot([0, globalOptima[0]], [ globalOptima[1],  globalOptima[1]], linestyle="--", color="red")
     plt.plot([globalOptima[0], globalOptima[0]], [ globalOptima[1],0], linestyle="--", color="red")
@@ -128,6 +130,7 @@ def iterativeHillClimbingPlot(f , lowerBound , upperBound , step , localOptimas 
     plt.ylabel('y - axis') 
     # giving a title to my graph 
     plt.title("IHC : No. of samples : " + str(numberOfSamples) ) 
+    plt.legend() 
     
     saveFig(plt , "Plots/IHC_Plot_" , "Plots/figureNumber.txt" )
     
