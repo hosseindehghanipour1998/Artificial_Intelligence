@@ -7,7 +7,7 @@ Created on Tue May 12 02:00:53 2020
 
 #============ Imports ====================
 from random import random
-
+from ExternalLibraries.Writer import Writer as Writer
 #=========================================
 targetProduct = 360
 targetSum = 36
@@ -58,6 +58,7 @@ def createRandomParents(parentsLength):
     for i in range (1,11):
         if ( not i in mother ):
             father.append(i)
+            
     print("Mother : " +  str(mother))
     print("Father : " +  str(father))
     return (mother,father)    
@@ -77,7 +78,7 @@ def getBestN(allChildren):
     for child in allChildren :
         summ , prod = caculateFactors(child)
         util_Sum , util_prod = utility( summ , prod )
-        if ( prodChild < minimumProd and sameTwoChildren(child , sumChild ) == False) :
+        if ( util_prod < minimumProd and sameTwoChildren(child , sumChild ) == False) :
             prodChild = child
         
     return sumChild , prodChild      
@@ -92,11 +93,11 @@ def crossOver( father , mother ):
     # 6 types of crossing over :
     children = []
     children.append( father[0:3] + mother[3:5] )
+#    children.append( father[3:5] + mother[0:3] )
+#    children.append( father[2:5] + mother[0:2] )
+#    children.append( father[0:2] + mother[2:5] )
     children.append( father[3:5] + mother[0:3] )
-    children.append( father[2:5] + mother[0:2] )
-    children.append( father[0:2] + mother[2:5] )
-    children.append( father[3:5] + mother[0:3] )
-    children.append( father[0:3] + mother[3:5] )
+#    children.append( father[0:3] + mother[3:5] )
     return children
 
 def mutate(child):    
@@ -109,22 +110,31 @@ def mutate(child):
 
 
 def environmet():
+    iterationNo = 0
+    writer = Writer("Results/children.txt")
+    writer.clearFile()
     parents = createRandomParents(parentsLength)
     mother = parents[0]
     father = parents[1]
+    writer.append(parents)
     while True :
         newBornChildren = crossOver(mother,father)
         mother , father = getBestN(newBornChildren)
         newParents = (mother , father)
+        writer.append(newParents)
         if( isSolution(newParents) == True ):
             print("Found Solution")
             return newParents
-        print("Not Good Enough")
+        iterationNo += 1
+        if(iterationNo == 100):
+            return False
+        
 
 def main():
     print("Calculating...")
     m , f = environmet()
     print(str(m) + "\n" + str(f))
+    print("Done!")
         
 main()            
         
