@@ -48,11 +48,14 @@ def isSolution(children):
 def createRandomParents(parentsLength):
     mother = []
     father = []
-    
-    for i in range( parentsLength - 1 ):
-        rnd = getRandom(1,10)
-        mother.append(rnd)
-    for i in range ( parentsLength * 2 ):
+    i = 0 
+    while (len(mother) != parentsLength):
+        i += 1
+        rnd = int(getRandom(1,10))
+        if(not rnd in mother):
+            mother.append(rnd)
+            
+    for i in range (1,11):
         if ( not i in mother ):
             father.append(i)
     print("Mother : " +  str(mother))
