@@ -32,12 +32,14 @@ h = (sp.sin(2*x)/x) * (sp.cos(x**(sp.exp(1))) * sp.pi * sp.ln(2*x))
 #*********************** Methods Implementation **********************************
 #*********************************************************************************
 def calculateDifferenciation(f,order):
+    # calculates the nth-order derivation of a function
     derivatedFunction = f 
     for i in range(0,order):
         derivatedFunction = sp.diff(derivatedFunction)
     return derivatedFunction
 ###############################################################################
 def getRandom( lowerBound , upperBound ):
+    #returns a random number between the wanted boundries
     value = random()
     scaledValue = lowerBound + (value * (upperBound - lowerBound))
     return scaledValue
@@ -55,24 +57,22 @@ def iterativeHillClimbing(numberOfSamples):
     return (globalOptima,samples)
 ###############################################################################       
 def findMinTuple( data , keyIndex ):
+    # finds and returns the tuple with minimm amount of KeyIndex as a factor 
     return min(data, key = lambda t: t[keyIndex])
 ###############################################################################
-def hillClimbing(expr, lowerBoundry , upperBoundry , randomValue , fileName):
+def hillClimbing(mountainFunction, lowerBoundry , upperBoundry , startingPoint , fileName):
     # "expr" is our function
-    dx = calculateDifferenciation(expr,1)
-    #value = getRandom(lowerBoundry,upperBoundry)
-    value_X = randomValue
-    slope = 1 if (dx.subs(x,value_X) > 0) else -1  
-    amount =  dx.subs(x,value_X)
-    derivationAmount = round(float(amount),1)
+    dx = calculateDifferenciation(mountainFunction,1)
+    value_X = startingPoint
+    derivationAmount = round(float(dx.subs(x,value_X)),1)  
+    slope = 1 if ( derivationAmount > 0) else -1  
     while (derivationAmount != 0.0 and value_X >= lowerBoundry and value_X <= upperBoundry ):
         if( slope > 0 ):
             value_X -= steps
         else :
             value_X += steps
-        amount =  dx.subs(x,value_X)
-        derivationAmount = round(float(amount),1)
-    value_Y = expr.subs(x,value_X)
+        derivationAmount = round(float(dx.subs(x,value_X)),1)
+    value_Y = mountainFunction.subs(x,value_X)
     value_X = round(float(value_X),2)
     value_Y = round(float(value_Y),2)
     return (value_X,value_Y)
@@ -181,7 +181,6 @@ def simulatedAnnealing(f,lowerBoundry,upperBoundry):
             
 ###################################################### MAIN #########################################
     
-
 ## Hill Climbing ##
 print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
 print("Calculating Hillclimbing")   
