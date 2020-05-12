@@ -20,10 +20,8 @@ populationSize = 50
 writer1 = Writer("Results/Parents.txt")
 write2 = Writer("Results/createBabies.txt")
 writer3 = Writer("Results/chooseBEstN.txt")
+writer4 = Writer("Results/complete.txt")
 
-writer1.clearFile();
-write2.clearFile()
-writer3.clearFile()
 #================ Extera Functions====================
 def getRandom( lowerBound , upperBound ):
     #returns a random number between the wanted boundries
@@ -61,7 +59,7 @@ def isSolution(children):
     child_2_Summation , child_2_Production = caculateFactors(children[1])
     if(   
        ((child_1_Summation == targetSum and child_2_Production == targetProduct ) or 
-       (child_2_Summation == targetSum and child_1_Production == targetProduct ))) :
+       (child_2_Summation == targetSum and child_1_Production == targetProduct )) and haveIntersection(children) == False ) :
         return True
 
 def createRandomParents(parentsLength):
@@ -102,7 +100,7 @@ def getBestN(population):
     for child in population :
         summ , prod = caculateFactors(child)
         util_Sum , util_prod = utility( summ , prod )
-        writer3.append(str(child) + "  \  " + str(util_prod))
+        writer3.append(str(child) + "  \  " + str(util_prod) + " [Iteration : " + str(iterationNo) + "]")
         if ( util_prod <= minimumProd and sameTwoChildren(child , sumChild ) == False) :
             prodChild = child
             minimumProd = util_prod     
@@ -228,10 +226,15 @@ def mutate(child):
             child[rndIndex] = rndNumber
             return child
 #==================================================
-
+iterationNo = 0
 def environmet():
+    
+    writer1.clearFile()
+    write2.clearFile()
+    writer3.clearFile()
     population = []
-    iterationNo = 0
+    
+
     
     parents = createRandomParents(parentsLength)
     
@@ -258,6 +261,11 @@ def environmet():
             print("Found Solution")
             return newParents
         iterationNo += 1
+        
+        writer4.append("===========================")
+        writer4.append(iterationNo)
+        writer4.append("Parents : " + str(newParents))
+        writer4.append(population)
 
         
 
