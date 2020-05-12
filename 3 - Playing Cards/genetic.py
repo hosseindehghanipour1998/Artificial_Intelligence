@@ -22,6 +22,7 @@ write2 = Writer("Results/createBabies.txt")
 writer3 = Writer("Results/chooseBEstN.txt")
 writer4 = Writer("Results/complete.txt")
 
+
 #================ Extera Functions====================
 def getRandom( lowerBound , upperBound ):
     #returns a random number between the wanted boundries
@@ -91,7 +92,7 @@ def getBestN(population):
     
     for child in population :       
         summ , prod = caculateFactors(child)
-         util_prod , util_Sum = utility( summ , prod )
+        util_prod , util_Sum = utility( summ , prod )
         if ( util_Sum <= minimumSum ):
             minimumSum = util_Sum
             sumChild = child
@@ -99,11 +100,11 @@ def getBestN(population):
     
     for child in population :
         summ , prod = caculateFactors(child)
-         util_prod , util_Sum = utility( summ , prod )
-        writer3.append(str(child) + "  \  " + str(util_prod) + " [Iteration : " + str(iterationNo) + "]")
+        util_prod , util_Sum = utility( summ , prod )
         if ( util_prod <= minimumProd and sameTwoChildren(child , sumChild ) == False) :
             prodChild = child
-            minimumProd = util_prod     
+            minimumProd = util_prod   
+    writer3.append("{%s : sum = %s }  | { %s : mult = %s } |It : %s | " %(sumChild,minimumSum , prodChild ,minimumProd , iterationNo ))
     return sumChild , prodChild      
 
 def partition(nums, low, high,pop):
@@ -232,6 +233,7 @@ def environmet():
     writer1.clearFile()
     write2.clearFile()
     writer3.clearFile()
+    writer4.clearFile()
     population = []
     
 
