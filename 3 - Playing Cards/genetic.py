@@ -82,32 +82,49 @@ def createRandomParents(parentsLength):
     return (mother,father)    
 
 def getBestN(population):
-
-    #writer.clearFile()
+    """ Approach 1 """
+#    minimumSum = targetSum
+#    minimumProd = 1000
+#    sumChild = None
+#    prodChild = None
+#    
+#
+#    for child in population :       
+#        summ , prod = caculateFactors(child)
+#        util_prod , util_Sum = utility( summ , prod )
+#        if ( util_Sum <= minimumSum ):
+#            minimumSum = util_Sum
+#            sumChild = child
+#    
+#    
+#    for child in population :
+#        summ , prod = caculateFactors(child)
+#        util_prod , util_Sum = utility( summ , prod )
+#        if ( util_prod <= minimumProd and sameTwoChildren(child , sumChild ) == False) :
+#            prodChild = child
+#            minimumProd = util_prod
+#
+#            
+#    writer3.append("{%s : sum = %s }  | { %s : mult = %s } |It : %s | " %(sumChild,minimumSum , prodChild ,minimumProd , iterationNo ))
+#    return sumChild , prodChild  
+    """ Apperoach 2 """  
     minimumSum = targetSum
     minimumProd = 1000
     sumChild = None
     prodChild = None
-    
-
+    for child in population :   
+        summ , prod = caculateFactors(child)
+        util_prod , util_Sum = utility( summ , prod )
+        if ( util_prod <= minimumProd) :
+            prodChild = child
+            minimumProd = util_prod
     for child in population :       
         summ , prod = caculateFactors(child)
         util_prod , util_Sum = utility( summ , prod )
-        if ( util_Sum <= minimumSum ):
+        if ( util_Sum <= minimumSum and haveIntersection((prodChild,child)) == False):
             minimumSum = util_Sum
             sumChild = child
-    
-    
-    for child in population :
-        summ , prod = caculateFactors(child)
-        util_prod , util_Sum = utility( summ , prod )
-        if ( util_prod <= minimumProd and sameTwoChildren(child , sumChild ) == False) :
-            prodChild = child
-            minimumProd = util_prod
-
-            
-    writer3.append("{%s : sum = %s }  | { %s : mult = %s } |It : %s | " %(sumChild,minimumSum , prodChild ,minimumProd , iterationNo ))
-    return sumChild , prodChild      
+    return (sumChild,prodChild)
 
 def bubble_sort(nums,pop):
     # We set swapped to True so the loop looks runs at least once
