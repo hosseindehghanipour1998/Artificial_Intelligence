@@ -33,7 +33,7 @@ def getRandom( lowerBound , upperBound ):
     return scaledValue
 
 def sameTwoChildren(childOne , childTwo):
-    writer7.append("Same Two Children")
+   # writer7.append("Same Two Children")
     appearance = 0 
     for item in childOne :
         if ( not item in childTwo ):
@@ -44,7 +44,7 @@ def sameTwoChildren(childOne , childTwo):
     return False
         
 def caculateFactors(child):
-    writer7.append("Calculate Factor")
+    #writer7.append("Calculate Factor")
     summation = 0 
     production = 1  
 #    print("Len : " + str((child)))
@@ -54,13 +54,13 @@ def caculateFactors(child):
     return summation,production
 
 def haveIntersection(children):
-    writer7.append("Hvae Intersection")
+    #writer7.append("Hvae Intersection")
     for item in children[0]:
         if(item in children[1]):
             return True
     return False
 def isSolution(children):
-    writer7.append("Is solution")
+   # writer7.append("Is solution")
     child_1_Summation , child_1_Production = caculateFactors(children[0])
     child_2_Summation , child_2_Production = caculateFactors(children[1])
     if(   
@@ -69,7 +69,7 @@ def isSolution(children):
         return True
 
 def createRandomParents(parentsLength):
-    writer7.append("Create Random Parents")
+   # writer7.append("Create Random Parents")
     mother = []
     father = []
     i = 0 
@@ -88,7 +88,7 @@ def createRandomParents(parentsLength):
     return (mother,father)    
 
 def getBestN(population):
-    writer7.append("Get Best N")
+   # writer7.append("Get Best N")
     """ Approach 1 """
 #    minimumSum = targetSum
 #    minimumProd = 1000
@@ -120,42 +120,42 @@ def getBestN(population):
     sumChild = None
     prodChild = None
     for child in population : 
-        writer7.append("GBN - FOR 1")
+       # writer7.append("GBN - FOR 1")
         summ , prod = caculateFactors(child)
         util_prod , util_Sum = utility( summ , prod )
         if ( util_prod <= minimumProd) :
             prodChild = child
             minimumProd = util_prod
     for child in population :    
-        writer7.append("GBS - FOR 2")
+       # writer7.append("GBS - FOR 2")
         summ , prod = caculateFactors(child)
         util_prod , util_Sum = utility( summ , prod )
         if ( util_Sum <= minimumSum and haveIntersection((prodChild,child)) == False):
             minimumSum = util_Sum
             sumChild = child
-    if (sumChild == None ):
-        writer7.append("GBN - IF")
-        for child in population :       
-            summ , prod = caculateFactors(child)
-            util_prod , util_Sum = utility( summ , prod )
-            if ( util_Sum <= minimumSum and countOverlap(child,prodChild) == 1):
-                minimumSum = util_Sum
-                sumChild = child
-        rnd = random.randint(0,100)
-        if ( rnd > mutationProbability ):
-            index = findIntersection(sumChild,prodChild)
-            sumChild = mutate(sumChild,True , index , prodChild)
+#    if (sumChild == None ):
+#        writer7.append("GBN - IF")
+#        for child in population :       
+#            summ , prod = caculateFactors(child)
+#            util_prod , util_Sum = utility( summ , prod )
+#            if ( util_Sum <= minimumSum and countOverlap(child,prodChild) == 1):
+#                minimumSum = util_Sum
+#                sumChild = child
+#        rnd = random.randint(0,100)
+#        if ( rnd > mutationProbability ):
+#            index = findIntersection(sumChild,prodChild)
+#            sumChild = mutate(sumChild,True , index , prodChild)
             
             
     return (prodChild,sumChild)
 def findIntersection(c1,c2):
-    writer7.append("FIND INTERSECTION")
+   # writer7.append("FIND INTERSECTION")
     for i in c1 :
         if(i in c2):
             return c2.index(i)
     return -1
 def bubble_sort(nums,pop):
-    writer7.append("BUBBLE SORT")
+    #writer7.append("BUBBLE SORT")
     # We set swapped to True so the loop looks runs at least once
     swapped = True
     while swapped:
@@ -175,7 +175,7 @@ def bubble_sort(nums,pop):
     
     
 def deportUnworthyPeople(population):
-    writer7.append("DEPORT ONWORTHY")
+   # writer7.append("DEPORT ONWORTHY")
     worthyPop = []
     sum_nums = [] 
     prod_nums = []
@@ -209,7 +209,7 @@ def deportUnworthyPeople(population):
     return worthyPop
 
 def countOverlap(li1 , li2):
-    writer7.append("COUNT OVERLAP")
+    #writer7.append("COUNT OVERLAP")
     overlap = 0 
     for item in li1 :
         if(item in li2):
@@ -218,88 +218,11 @@ def countOverlap(li1 , li2):
 #================ Main Functions====================
     
 def utility(childSum , childProduct ):
-    writer7.append("UTILITY")
+    #writer7.append("UTILITY")
     return (abs(1 -  float(childProduct/targetProduct) ), abs(targetSum - childSum) )
 
 def crossOver( father , mother ): 
-    writer7.append("CROSS OVER")
-    """ Approach 1 """
-#    from random import shuffle
-#    shuffle(mother)
-#    shuffle(father)
-#     approach 1
-#    children = []
-#    child = []
-#    write2.append("Mother : " + str(father) +  " Father : " + str(mother))
-#    i = 0 
-#    allowed = True
-#    while i < 2 : 
-#        child = []
-#        while(True):
-#            
-#            if(len(child) < parentsLength ):
-#                rndIndex = random.randint(-4,4)
-#                g1 = father[rndIndex]
-#                if(not g1 in child):
-#                    child.append(g1)
-#            
-#            if(len(child) < parentsLength ):
-#                rndIndex = random.randint(-4,4)
-#                g2 = mother[rndIndex]
-#                if(not g2 in child):
-#                    child.append(g2)
-#            else :
-#                break
-#        
-#        probability = random.randint(0,100)
-#        if(probability > mutationProbability):
-#            child = mutate(child)        
-#        if ( len(children) > 0 ):
-#            if(sameTwoChildren(child,children[0]) == True ):
-#                write2.append("Same Child Born")
-#                i -= 1
-#                allowed = False
-#            else :
-#                allowed = True
-#        if ( allowed ): 
-#            children.append(child)
-#            write2.append(child)            
-#        i += 1
-    """ Approach 2 """
-#    from random import shuffle
-#    shuffle(mother)
-#    shuffle(father)
-#    def mix(mom,dad):
-#        child = []      
-#        while(True):    
-#            if(len(child) < parentsLength ):
-#                rndIndex = random.randint(-4,4)
-#                g1 = dad[rndIndex]
-#                if(not g1 in child):
-#                    child.append(g1)
-#            
-#            if(len(child) < parentsLength ):
-#                rndIndex = random.randint(-4,4)
-#                g2 = mom[rndIndex]
-#                if(not g2 in child):
-#                    child.append(g2)
-#            else :
-#                return child
-#        
-#    child1 = mix(mother,father)
-#    
-#
-#    child2 = []
-#    probability = random.randint(0,100)
-#    if(probability > mutationProbability):
-#        child2 = mutate(child1,child2)
-#    else :
-#        child2 = mix(mother,father)
-#     
-#    child2 = mutate(child1,child2)
-#    children = [child1,child2]
-    """ Approach 3 """
-    
+   # writer7.append("CROSS OVER")
     child1 = []
     while True :
         writer7.append("CROSS OVER - WHILE 1")
@@ -321,26 +244,21 @@ def crossOver( father , mother ):
     return (child1,child2)
 
 def mutate( child , status = False , index = 0 , brother = None): 
-    writer7.append("MUTATION")
+    #writer7.append("MUTATION")
     if ( status == True):
         while True :
-            writer7.append("IF - M ")
+            #writer7.append("IF - M ")
             rndNumber = random.randint(1,10)
             if(not rndNumber in brother):
                 child[index] = rndNumber
     else :
-        writer7.append("ELSE - M")
+        #writer7.append("ELSE - M")
         while True :
             rndNumber = random.randint(1,10)
             rndIndex = random.randint(0,4)
             if ( (not rndNumber in child) ):
                 child[rndIndex] = rndNumber
                 return child
-#    for item in range(1,11):
-#        if(not item in bro):
-#            child.append(item)
-#    return child    
-
 
 #==================================================
 
@@ -371,11 +289,15 @@ def environmet():
         newBornChildren = crossOver(mother,father)
         writer4.append("===========================")
         writer4.append("Newborn : " + str(newBornChildren))
-        population.append(newBornChildren[0])
-        population.append(newBornChildren[1])
-
-        newParents = getBestN(population)
-        mother , father = newParents
+        if ( newBornChildren[0] != None ):
+            population.append(newBornChildren[0])
+        if ( newBornChildren[1] != None ):
+            population.append(newBornChildren[1])
+        while True :
+            newParents = getBestN(population)
+            if ( newParents[0] != None and newParents[1] != None  ):
+                mother , father = newParents
+                break
         
         writer4.append(iterationNo)
         writer4.append("Parents : " + str(newParents))
