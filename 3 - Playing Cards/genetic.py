@@ -82,38 +82,11 @@ def createRandomParents(parentsLength):
     for i in range (1,11):
         if ( not i in mother ):
             father.append(i)
-            
-#    print("Mother : " +  str(mother))
-#    print("Father : " +  str(father))
+
     return (mother,father)    
 
 def getBestN(population):
-   # writer7.append("Get Best N")
-    """ Approach 1 """
-#    minimumSum = targetSum
-#    minimumProd = 1000
-#    sumChild = None
-#    prodChild = None
-#    
-#
-#    for child in population :       
-#        summ , prod = caculateFactors(child)
-#        util_prod , util_Sum = utility( summ , prod )
-#        if ( util_Sum <= minimumSum ):
-#            minimumSum = util_Sum
-#            sumChild = child
-#    
-#    
-#    for child in population :
-#        summ , prod = caculateFactors(child)
-#        util_prod , util_Sum = utility( summ , prod )
-#        if ( util_prod <= minimumProd and sameTwoChildren(child , sumChild ) == False) :
-#            prodChild = child
-#            minimumProd = util_prod
-#
-#            
-#    writer3.append("{%s : sum = %s }  | { %s : mult = %s } |It : %s | " %(sumChild,minimumSum , prodChild ,minimumProd , iterationNo ))
-#    return sumChild , prodChild  
+
     """ Apperoach 2 """  
     minimumSum = 1000
     minimumProd = 1000
@@ -133,21 +106,9 @@ def getBestN(population):
         if ( util_Sum <= minimumSum and haveIntersection((prodChild,child)) == False):
             minimumSum = util_Sum
             sumChild = child
-#    if (sumChild == None ):
-#        writer7.append("GBN - IF")
-#        for child in population :       
-#            summ , prod = caculateFactors(child)
-#            util_prod , util_Sum = utility( summ , prod )
-#            if ( util_Sum <= minimumSum and countOverlap(child,prodChild) == 1):
-#                minimumSum = util_Sum
-#                sumChild = child
-#        rnd = random.randint(0,100)
-#        if ( rnd > mutationProbability ):
-#            index = findIntersection(sumChild,prodChild)
-#            sumChild = mutate(sumChild,True , index , prodChild)
-            
-            
+      
     return (prodChild,sumChild)
+
 def findIntersection(c1,c2):
    # writer7.append("FIND INTERSECTION")
     for i in c1 :
@@ -156,7 +117,6 @@ def findIntersection(c1,c2):
     return -1
 def bubble_sort(nums,pop):
     #writer7.append("BUBBLE SORT")
-    # We set swapped to True so the loop looks runs at least once
     swapped = True
     while swapped:
         swapped = False
