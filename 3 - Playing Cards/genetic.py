@@ -140,6 +140,7 @@ def crossOver( father , mother ):
         probability = random.randint(0,100)
         if(probability > mutationProbability):
             child = mutate(child)
+            write2.append("Mutated")
             
         if ( len(children) > 0 ):
             if(sameTwoChildren(child,children[0]) == False ):
