@@ -9,7 +9,7 @@ Created on Tue May 12 02:00:53 2020
 import random
 from math import *
 from ExternalLibraries.Writer import Writer as Writer
-import matplotlib.pyplot as plt
+
 
 #=========================================
 targetProduct = 360
@@ -21,6 +21,7 @@ iterationNo = 0
 numberOfHalts = 30
 debuMode = False
 testCaseNo = 1
+globalX = 0 
 #=====================================================
 writer1 = Writer("Results/Parents.txt")
 write2 = Writer("Results/createBabies.txt")
@@ -96,7 +97,7 @@ def createRandomParents(parentsLength):
     return (mother,father)    
 
 def getBestN(population , exception = False):
-
+    global globalX
     """ Apperoach 2 """  
     minimumSum = 1000
     minimumProd = 1000
@@ -107,7 +108,6 @@ def getBestN(population , exception = False):
             writer7.append("GBN - FOR 1")
         summ , prod = caculateFactors(child)
         util_prod , util_Sum = utility( summ , prod )
-        plt.plot( util_prod , color = "black" )
         if ( util_prod <= minimumProd) :
             prodChild = child
             minimumProd = util_prod
