@@ -178,7 +178,7 @@ def utility(childSum , childProduct ):
 
 def crossOver( father , mother ):   
 
-    children = []
+    children = [None,None]
     child = []
     write2.append("Mother : " + str(father) +  " Father : " + str(mother))
     i = 0 
@@ -203,10 +203,10 @@ def crossOver( father , mother ):
         
         probability = random.randint(0,100)
         if(probability > mutationProbability):
-            child = mutate(child)
+            child = mutate(child , children[0])
             write2.append("Mutated")
             
-        if ( len(children) > 0 ):
+        if ( children[1] != None ):
             if(sameTwoChildren(child,children[0]) == False ):
                 write2.append("Same Child Born")
                 i -= 1
@@ -223,9 +223,13 @@ def mutate( child , brother ):
     while True :
         rndNumber = random.randint(1,10)
         rndIndex = random.randint(0,4)
-        if ( (not rndNumber in child) and (not rndNumber in brother ) ):
-            child[rndIndex] = rndNumber
-            return child
+        if ( (not rndNumber in child) ):
+            if( brother != None and (not rndNumber in brother ) ):
+                child[rndIndex] = rndNumber
+                return child
+            elif ( brother == None ):
+                child[rndIndex] = rndNumber
+                return child
 #==================================================
 
 def environmet():
