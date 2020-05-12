@@ -13,6 +13,7 @@ from ExternalLibraries.Writer import Writer as Writer
 targetProduct = 360
 targetSum = 36
 parentsLength = 5 
+mutationProbability = 40
 
 #=====================================================
 writer1 = Writer("Results/Parents.txt")
@@ -48,13 +49,18 @@ def caculateFactors(child):
         production *= chromosome
     return summation,production
 
+def haveIntersection(children):
+    for item in children[0]:
+        if(item in children[1]):
+            return True
+    return False
 def isSolution(children):
     
     child_1_Summation , child_1_Production = caculateFactors(children[0])
     child_2_Summation , child_2_Production = caculateFactors(children[1])
     if(   
-       (child_1_Summation == targetSum and child_2_Production == targetProduct ) or 
-       (child_2_Summation == targetSum and child_1_Production == targetProduct ) ) :
+       ((child_1_Summation == targetSum and child_2_Production == targetProduct ) or 
+       (child_2_Summation == targetSum and child_1_Production == targetProduct ))) :
         return True
 
 def createRandomParents(parentsLength):
@@ -104,7 +110,7 @@ def getBestN(population):
 #================ Main Functions====================
     
 def utility(childSum , childProduct ):
-    return ( float(childProduct/targetProduct) , abs(targetSum - childSum) )
+    return (abs(1 -  float(childProduct/targetProduct) ), abs(targetSum - childSum) )
 
 def crossOver( father , mother ):   
 
@@ -130,6 +136,10 @@ def crossOver( father , mother ):
                     child.append(g2)
             else :
                 break
+        
+        probability = random.randint(0,100)
+        if(probability > mutationProbability):
+            child = mutate(child)
             
         if ( len(children) > 0 ):
             if(sameTwoChildren(child,children[0]) == False ):
@@ -146,11 +156,11 @@ def crossOver( father , mother ):
 
 def mutate(child):    
     while True :
-        rndNumber = getRandom(1,10)
-        rndIndex = getRandom(0,4)
+        rndNumber = random.randint(1,10)
+        rndIndex = random.randint(0,4)
         if ( not rndNumber in child ):
             child[rndIndex] = rndNumber
-            break
+            return child
 #==================================================
 
 def environmet():
