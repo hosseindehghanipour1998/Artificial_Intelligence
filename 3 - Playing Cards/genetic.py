@@ -169,48 +169,49 @@ def utility(childSum , childProduct ):
     return (abs(1 -  float(childProduct/targetProduct) ), abs(targetSum - childSum) )
 
 def crossOver( father , mother ):  
+    """ Approach 1 """
 #    from random import shuffle
 #    shuffle(mother)
 #    shuffle(father)
 #     approach 1
-    children = []
-    child = []
-    write2.append("Mother : " + str(father) +  " Father : " + str(mother))
-    i = 0 
-    allowed = True
-    while i < 2 : 
-        child = []
-        while(True):
-            
-            if(len(child) < parentsLength ):
-                rndIndex = random.randint(-4,4)
-                g1 = father[rndIndex]
-                if(not g1 in child):
-                    child.append(g1)
-            
-            if(len(child) < parentsLength ):
-                rndIndex = random.randint(-4,4)
-                g2 = mother[rndIndex]
-                if(not g2 in child):
-                    child.append(g2)
-            else :
-                break
-        
-        probability = random.randint(0,100)
-        if(probability > mutationProbability):
-            child = mutate(child)        
-        if ( len(children) > 0 ):
-            if(sameTwoChildren(child,children[0]) == True ):
-                write2.append("Same Child Born")
-                i -= 1
-                allowed = False
-            else :
-                allowed = True
-        if ( allowed ): 
-            children.append(child)
-            write2.append(child)            
-        i += 1
-    
+#    children = []
+#    child = []
+#    write2.append("Mother : " + str(father) +  " Father : " + str(mother))
+#    i = 0 
+#    allowed = True
+#    while i < 2 : 
+#        child = []
+#        while(True):
+#            
+#            if(len(child) < parentsLength ):
+#                rndIndex = random.randint(-4,4)
+#                g1 = father[rndIndex]
+#                if(not g1 in child):
+#                    child.append(g1)
+#            
+#            if(len(child) < parentsLength ):
+#                rndIndex = random.randint(-4,4)
+#                g2 = mother[rndIndex]
+#                if(not g2 in child):
+#                    child.append(g2)
+#            else :
+#                break
+#        
+#        probability = random.randint(0,100)
+#        if(probability > mutationProbability):
+#            child = mutate(child)        
+#        if ( len(children) > 0 ):
+#            if(sameTwoChildren(child,children[0]) == True ):
+#                write2.append("Same Child Born")
+#                i -= 1
+#                allowed = False
+#            else :
+#                allowed = True
+#        if ( allowed ): 
+#            children.append(child)
+#            write2.append(child)            
+#        i += 1
+    """ Approach 2 """
 #    from random import shuffle
 #    shuffle(mother)
 #    shuffle(father)
@@ -243,8 +244,26 @@ def crossOver( father , mother ):
 #     
 #    child2 = mutate(child1,child2)
 #    children = [child1,child2]
+    """ Approach 3 """
     
-    return children
+    child1 = []
+    while True :
+        if(len(child1) < parentsLength ):
+            rnd = random.randint(-4,4)
+            if (not mother[rnd]  in child1):
+                child1.append(mother[rnd])
+        if(len(child1) < parentsLength):
+            rnd = random.randint(-4,4)
+            if (not father[rnd]  in child1):
+                child1.append(father[rnd])
+        else :
+            break
+    child2 = []
+    for item in range(1,11):
+        if(not item in child1):
+            child2.append(item)
+            
+    return (child1,child2)
 
 def mutate( child ):    
     while True :
@@ -286,7 +305,7 @@ def environmet():
         print(iterationNo)
         newBornChildren = crossOver(mother,father)
         writer4.append("===========================")
-        writer4.append("Newborn : %s" %newBornChildren)
+        writer4.append("Newborn : " + str(newBornChildren))
         population.append(newBornChildren[0])
         population.append(newBornChildren[1])
         newParents = getBestN(population)
