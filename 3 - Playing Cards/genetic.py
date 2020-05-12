@@ -162,15 +162,17 @@ def deportUnworthyPeople(population):
     quick_sort(sum_nums,pop1)    
     quick_sort(prod_nums,pop2)
     
-    for i in range (0,25):
+    for i in range (0,26):
         worthyPop.append(pop1[i])
     i = 0 
-    while (len (worthyPop) < 50):
+    while (len (worthyPop) < 50 and i < 50):
+        print("len(%s) : index : %s " %(len(worthyPop),i))
         if ( not pop2[i] in worthyPop):
             worthyPop.append(pop2[i])
         i += 1
+    return worthyPop.reverse()
 
-       
+      
 #================ Main Functions====================
     
 def utility(childSum , childProduct ):
@@ -178,7 +180,7 @@ def utility(childSum , childProduct ):
 
 def crossOver( father , mother ):   
 
-    children = [None,None]
+    children = []
     child = []
     write2.append("Mother : " + str(father) +  " Father : " + str(mother))
     i = 0 
@@ -203,33 +205,28 @@ def crossOver( father , mother ):
         
         probability = random.randint(0,100)
         if(probability > mutationProbability):
-            child = mutate(child , children[0])
-            write2.append("Mutated")
-            
-        if ( children[1] != None ):
+            child = mutate(child)        
+        if ( len(children) > 0 ):
             if(sameTwoChildren(child,children[0]) == False ):
                 write2.append("Same Child Born")
                 i -= 1
                 allowed = False
             else :
                 allowed = True
-        if ( allowed ):        
+        if ( allowed ): 
             children.append(child)
             write2.append(child)            
         i += 1
     return children
 
-def mutate( child , brother ):    
+def mutate( child ):    
     while True :
         rndNumber = random.randint(1,10)
         rndIndex = random.randint(0,4)
         if ( (not rndNumber in child) ):
-            if( brother != None and (not rndNumber in brother ) ):
-                child[rndIndex] = rndNumber
-                return child
-            elif ( brother == None ):
-                child[rndIndex] = rndNumber
-                return child
+            child[rndIndex] = rndNumber
+            return child
+
 #==================================================
 
 def environmet():
@@ -259,19 +256,24 @@ def environmet():
         population.append(newBornChildren[1])
         newParents = getBestN(population)
         mother , father = newParents
+        
+        print(iterationNo)
+        writer4.append("===========================")
+        writer4.append(iterationNo)
+        writer4.append("Parents : " + str(newParents))
+        writer4.append(population)
+        writer4.append(len(population))
+        
+        
         if ( len(population) >= populationSize ):
-            deportUnworthyPeople(population)
+            population = deportUnworthyPeople(population)
             
         writer1.append(newParents)
         if( isSolution(newParents) == True ):
             print("Found Solution")
             return newParents
         iterationNo += 1
-        print(iterationNo)
-        writer4.append("===========================")
-        writer4.append(iterationNo)
-        writer4.append("Parents : " + str(newParents))
-        writer4.append(population)
+
 
         
 
