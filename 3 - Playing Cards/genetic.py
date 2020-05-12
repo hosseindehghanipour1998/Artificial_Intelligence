@@ -14,14 +14,14 @@ targetProduct = 360
 targetSum = 36
 parentsLength = 5 
 mutationProbability = 40
-populationSize = 50
+populationSize = 10
 iterationNo = 0
 #=====================================================
 writer1 = Writer("Results/Parents.txt")
 write2 = Writer("Results/createBabies.txt")
 writer3 = Writer("Results/chooseBEstN.txt")
 writer4 = Writer("Results/complete.txt")
-
+writer5 = Writer("Results/sortSome.txt")
 
 #================ Extera Functions====================
 def getRandom( lowerBound , upperBound ):
@@ -89,7 +89,7 @@ def getBestN(population):
     sumChild = None
     prodChild = None
     
-    
+
     for child in population :       
         summ , prod = caculateFactors(child)
         util_prod , util_Sum = utility( summ , prod )
@@ -103,53 +103,35 @@ def getBestN(population):
         util_prod , util_Sum = utility( summ , prod )
         if ( util_prod <= minimumProd and sameTwoChildren(child , sumChild ) == False) :
             prodChild = child
-            minimumProd = util_prod   
+            minimumProd = util_prod
+
+            
     writer3.append("{%s : sum = %s }  | { %s : mult = %s } |It : %s | " %(sumChild,minimumSum , prodChild ,minimumProd , iterationNo ))
     return sumChild , prodChild      
 
-def partition(nums, low, high,pop):
-    # We select the middle element to be the pivot. Some implementations select
-    # the first element or the last element. Sometimes the median value becomes
-    # the pivot, or a random one. There are many more strategies that can be
-    # chosen or created.
-    pivot = nums[(low + high) // 2]
-    i = low - 1
-    j = high + 1
-    while True:
-        i += 1
-        while nums[i] < pivot:
-            i += 1
-
-        j -= 1
-        while nums[j] > pivot:
-            j -= 1
-
-        if i >= j:
-            return j
-
-        # If an element at i (on the left of the pivot) is larger than the
-        # element at j (on right right of the pivot), then swap them
-        nums[i], nums[j] = nums[j], nums[i]
-        pop[i],pop[j] = pop[j],pop[i]
-
-def quick_sort(nums,pop):
-    # Create a helper function that will be called recursively
-    def _quick_sort(items, low, high , pop):
-        if low < high:
-            # This is the index after the pivot, where our lists are split
-            split_index = partition(items, low, high,pop)
-            _quick_sort(items, low, split_index,pop)
-            _quick_sort(items, split_index + 1, high,pop)
-
-    _quick_sort(nums, 0, len(nums) - 1 , pop)
+def bubble_sort(nums,pop):
+    # We set swapped to True so the loop looks runs at least once
+    swapped = True
+    while swapped:
+        swapped = False
+        for i in range(len(nums) - 1):
+            if nums[i] > nums[i + 1]:
+                # Swap the elements
+                nums[i], nums[i + 1] = nums[i + 1], nums[i]
+                pop[i], pop[i + 1] = pop[i + 1], pop[i]
+                # Set the flag to True so we'll loop again
+                swapped = True
+    writer5.append("================================================")           
+    writer5.append("IT : %s"%iterationNo)            
+    writer5.append(nums)
     
-
 def deportUnworthyPeople(population):
     worthyPop = []
     sum_nums = [] 
     prod_nums = []
     for item in population:
         summ , prod = caculateFactors(item)
+        prod,summ   = utility(summ,prod)
         sum_nums.append(summ)
         prod_nums.append(prod)
     
@@ -159,64 +141,98 @@ def deportUnworthyPeople(population):
         pop1.append(item)
         pop2.append(item)
     
-    quick_sort(sum_nums,pop1)    
-    quick_sort(prod_nums,pop2)
-    
-    for i in range (0,26):
-        worthyPop.append(pop1[i])
+    bubble_sort(sum_nums,pop1)    
+    bubble_sort(prod_nums,pop2)
     i = 0 
-    while (len (worthyPop) < 50 and i < 50):
-        print("len(%s) : index : %s " %(len(worthyPop),i))
+    while i < populationSize/2 :
+        worthyPop.append(pop1[i])
+        i += 1
+    i = 0 
+    while (len(worthyPop) < populationSize ):
         if ( not pop2[i] in worthyPop):
             worthyPop.append(pop2[i])
         i += 1
-    return worthyPop.reverse()
+    return worthyPop
 
-      
+def countOverlap(li1 , li2):
+    overlap = 0 
+    for item in li1 :
+        if(item in li2):
+            overlap += 1
+    return overlap    
 #================ Main Functions====================
     
 def utility(childSum , childProduct ):
     return (abs(1 -  float(childProduct/targetProduct) ), abs(targetSum - childSum) )
 
-def crossOver( father , mother ):   
+def crossOver( father , mother ):  
+#    from random import shuffle
+#    shuffle(mother)
+#    shuffle(father)
+    # approach 1
+#    children = []
+#    child = []
+#    write2.append("Mother : " + str(father) +  " Father : " + str(mother))
+#    i = 0 
+#    allowed = True
+#    while i < 2 : 
+#        child = []
+#        while(True):
+#            
+#            if(len(child) < parentsLength ):
+#                rndIndex = random.randint(-4,4)
+#                g1 = father[rndIndex]
+#                if(not g1 in child):
+#                    child.append(g1)
+#            
+#            if(len(child) < parentsLength ):
+#                rndIndex = random.randint(-4,4)
+#                g2 = mother[rndIndex]
+#                if(not g2 in child):
+#                    child.append(g2)
+#            else :
+#                break
+#        
+#        probability = random.randint(0,100)
+#        if(probability > mutationProbability):
+#            if ( len ( children ) == 1 ):
+#                child = mutate2( child , children[0] )
+#            else :
+#                child = mutate(child)        
+#        if ( len(children) > 0 ):
+#            if(sameTwoChildren(child,children[0]) == True ):
+#                write2.append("Same Child Born")
+#                i -= 1
+#                allowed = False
+#            else :
+#                allowed = True
+#        if ( allowed ): 
+#            children.append(child)
+#            write2.append(child)            
+#        i += 1
+    child1 = []
+    while(True):
 
-    children = []
-    child = []
-    write2.append("Mother : " + str(father) +  " Father : " + str(mother))
-    i = 0 
-    allowed = True
-    while i < 2 : 
-        child = []
-        while(True):
-            
-            if(len(child) < parentsLength ):
-                rndIndex = random.randint(-4,4)
-                g1 = father[rndIndex]
-                if(not g1 in child):
-                    child.append(g1)
-            
-            if(len(child) < parentsLength ):
-                rndIndex = random.randint(-4,4)
-                g2 = mother[rndIndex]
-                if(not g2 in child):
-                    child.append(g2)
-            else :
-                break
+        if(len(child1) < parentsLength ):
+            rndIndex = random.randint(-4,4)
+            g1 = father[rndIndex]
+            if(not g1 in child1):
+                child1.append(g1)
         
-        probability = random.randint(0,100)
-        if(probability > mutationProbability):
-            child = mutate(child)        
-        if ( len(children) > 0 ):
-            if(sameTwoChildren(child,children[0]) == False ):
-                write2.append("Same Child Born")
-                i -= 1
-                allowed = False
-            else :
-                allowed = True
-        if ( allowed ): 
-            children.append(child)
-            write2.append(child)            
-        i += 1
+        if(len(child1) < parentsLength ):
+            rndIndex = random.randint(-4,4)
+            g2 = mother[rndIndex]
+            if(not g2 in child1):
+                child1.append(g2)
+        else :
+            break
+
+    child2 = []
+    for item in range(1,11):
+        if(not item in child1):
+            child2.append(item)
+    children = [child1,child2]
+    
     return children
 
 def mutate( child ):    
@@ -224,6 +240,14 @@ def mutate( child ):
         rndNumber = random.randint(1,10)
         rndIndex = random.randint(0,4)
         if ( (not rndNumber in child) ):
+            child[rndIndex] = rndNumber
+            return child
+
+def mutate2( child , brother ):    
+    while True :
+        rndNumber = random.randint(1,10)
+        rndIndex = random.randint(0,4)
+        if ( (not rndNumber in child) and (not rndNumber in brother) ):
             child[rndIndex] = rndNumber
             return child
 
@@ -235,6 +259,7 @@ def environmet():
     write2.clearFile()
     writer3.clearFile()
     writer4.clearFile()
+    writer5.clearFile()
     population = []
     
 
@@ -250,15 +275,15 @@ def environmet():
     
     while True :
         
-
+        print(iterationNo)
         newBornChildren = crossOver(mother,father)
+        writer4.append("===========================")
+        writer4.append("Newborn : %s" %newBornChildren)
         population.append(newBornChildren[0])
         population.append(newBornChildren[1])
         newParents = getBestN(population)
         mother , father = newParents
         
-        print(iterationNo)
-        writer4.append("===========================")
         writer4.append(iterationNo)
         writer4.append("Parents : " + str(newParents))
         writer4.append(population)
@@ -267,6 +292,7 @@ def environmet():
         
         if ( len(population) >= populationSize ):
             population = deportUnworthyPeople(population)
+            
             
         writer1.append(newParents)
         if( isSolution(newParents) == True ):
