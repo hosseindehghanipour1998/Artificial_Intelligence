@@ -14,6 +14,7 @@ targetProduct = 360
 targetSum = 36
 parentsLength = 5 
 mutationProbability = 40
+populationSize = 50
 
 #=====================================================
 writer1 = Writer("Results/Parents.txt")
@@ -106,6 +107,70 @@ def getBestN(population):
             prodChild = child
             minimumProd = util_prod     
     return sumChild , prodChild      
+
+def partition(nums, low, high,pop):
+    # We select the middle element to be the pivot. Some implementations select
+    # the first element or the last element. Sometimes the median value becomes
+    # the pivot, or a random one. There are many more strategies that can be
+    # chosen or created.
+    pivot = nums[(low + high) // 2]
+    i = low - 1
+    j = high + 1
+    while True:
+        i += 1
+        while nums[i] < pivot:
+            i += 1
+
+        j -= 1
+        while nums[j] > pivot:
+            j -= 1
+
+        if i >= j:
+            return j
+
+        # If an element at i (on the left of the pivot) is larger than the
+        # element at j (on right right of the pivot), then swap them
+        nums[i], nums[j] = nums[j], nums[i]
+        pop[i],pop[j] = pop[j],pop[i]
+
+def quick_sort(nums,pop):
+    # Create a helper function that will be called recursively
+    def _quick_sort(items, low, high , pop):
+        if low < high:
+            # This is the index after the pivot, where our lists are split
+            split_index = partition(items, low, high,pop)
+            _quick_sort(items, low, split_index,pop)
+            _quick_sort(items, split_index + 1, high,pop)
+
+    _quick_sort(nums, 0, len(nums) - 1 , pop)
+    
+
+def deportUnworthyPeople(population):
+    worthyPop = []
+    sum_nums = [] 
+    prod_nums = []
+    for item in population:
+        summ , prod = caculateFactors(item)
+        sum_nums.append(summ)
+        prod_nums.append(prod)
+    
+    pop1 = []
+    pop2 = []
+    for item in population:
+        pop1.append(item)
+        pop2.append(item)
+    
+    quick_sort(sum_nums,pop1)    
+    quick_sort(prod_nums,pop2)
+    
+    for i in range (0,25):
+        worthyPop.append(pop1[i])
+    i = 0 
+    while (len (worthyPop) < 50):
+        if ( not pop2[i] in worthyPop):
+            worthyPop.append(pop2[i])
+        i += 1
+    print("Deported People")
        
 #================ Main Functions====================
     
@@ -185,7 +250,9 @@ def environmet():
         population.append(newBornChildren[1])
         newParents = getBestN(population)
         mother , father = newParents
-        population = [ mother , father]
+        if ( len(population) >= populationSize ):
+            deportUnworthyPeople(population)
+            
         writer1.append(newParents)
         if( isSolution(newParents) == True ):
             print("Found Solution")
