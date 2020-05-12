@@ -15,7 +15,7 @@ targetSum = 36
 parentsLength = 5 
 mutationProbability = 40
 populationSize = 50
-
+iterationNo = 0
 #=====================================================
 writer1 = Writer("Results/Parents.txt")
 write2 = Writer("Results/createBabies.txt")
@@ -91,7 +91,7 @@ def getBestN(population):
     
     for child in population :       
         summ , prod = caculateFactors(child)
-        util_Sum , util_prod = utility( summ , prod )
+         util_prod , util_Sum = utility( summ , prod )
         if ( util_Sum <= minimumSum ):
             minimumSum = util_Sum
             sumChild = child
@@ -99,7 +99,7 @@ def getBestN(population):
     
     for child in population :
         summ , prod = caculateFactors(child)
-        util_Sum , util_prod = utility( summ , prod )
+         util_prod , util_Sum = utility( summ , prod )
         writer3.append(str(child) + "  \  " + str(util_prod) + " [Iteration : " + str(iterationNo) + "]")
         if ( util_prod <= minimumProd and sameTwoChildren(child , sumChild ) == False) :
             prodChild = child
@@ -168,7 +168,7 @@ def deportUnworthyPeople(population):
         if ( not pop2[i] in worthyPop):
             worthyPop.append(pop2[i])
         i += 1
-    print("Deported People")
+
        
 #================ Main Functions====================
     
@@ -226,9 +226,9 @@ def mutate(child):
             child[rndIndex] = rndNumber
             return child
 #==================================================
-iterationNo = 0
+
 def environmet():
-    
+    global  iterationNo
     writer1.clearFile()
     write2.clearFile()
     writer3.clearFile()
@@ -247,7 +247,7 @@ def environmet():
     
     while True :
         
-        print(iterationNo)
+
         newBornChildren = crossOver(mother,father)
         population.append(newBornChildren[0])
         population.append(newBornChildren[1])
@@ -261,7 +261,7 @@ def environmet():
             print("Found Solution")
             return newParents
         iterationNo += 1
-        
+        print(iterationNo)
         writer4.append("===========================")
         writer4.append(iterationNo)
         writer4.append("Parents : " + str(newParents))
