@@ -14,7 +14,7 @@ targetProduct = 360
 targetSum = 36
 parentsLength = 5 
 mutationProbability = 40
-populationSize = 10
+populationSize = 100
 iterationNo = 0
 #=====================================================
 writer1 = Writer("Results/Parents.txt")
@@ -148,10 +148,13 @@ def deportUnworthyPeople(population):
         worthyPop.append(pop1[i])
         i += 1
     i = 0 
-    while (len(worthyPop) < populationSize ):
-        if ( not pop2[i] in worthyPop):
+
+    for item in pop2 :
+        if(len(worthyPop) == populationSize ):
+            break
+        if ( not item in worthyPop):           
             worthyPop.append(pop2[i])
-        i += 1
+            
     return worthyPop
 
 def countOverlap(li1 , li2):
@@ -169,69 +172,77 @@ def crossOver( father , mother ):
 #    from random import shuffle
 #    shuffle(mother)
 #    shuffle(father)
-    # approach 1
-#    children = []
-#    child = []
-#    write2.append("Mother : " + str(father) +  " Father : " + str(mother))
-#    i = 0 
-#    allowed = True
-#    while i < 2 : 
-#        child = []
-#        while(True):
-#            
+#     approach 1
+    children = []
+    child = []
+    write2.append("Mother : " + str(father) +  " Father : " + str(mother))
+    i = 0 
+    allowed = True
+    while i < 2 : 
+        child = []
+        while(True):
+            
+            if(len(child) < parentsLength ):
+                rndIndex = random.randint(-4,4)
+                g1 = father[rndIndex]
+                if(not g1 in child):
+                    child.append(g1)
+            
+            if(len(child) < parentsLength ):
+                rndIndex = random.randint(-4,4)
+                g2 = mother[rndIndex]
+                if(not g2 in child):
+                    child.append(g2)
+            else :
+                break
+        
+        probability = random.randint(0,100)
+        if(probability > mutationProbability):
+            child = mutate(child)        
+        if ( len(children) > 0 ):
+            if(sameTwoChildren(child,children[0]) == True ):
+                write2.append("Same Child Born")
+                i -= 1
+                allowed = False
+            else :
+                allowed = True
+        if ( allowed ): 
+            children.append(child)
+            write2.append(child)            
+        i += 1
+    
+#    from random import shuffle
+#    shuffle(mother)
+#    shuffle(father)
+#    def mix(mom,dad):
+#        child = []      
+#        while(True):    
 #            if(len(child) < parentsLength ):
 #                rndIndex = random.randint(-4,4)
-#                g1 = father[rndIndex]
+#                g1 = dad[rndIndex]
 #                if(not g1 in child):
 #                    child.append(g1)
 #            
 #            if(len(child) < parentsLength ):
 #                rndIndex = random.randint(-4,4)
-#                g2 = mother[rndIndex]
+#                g2 = mom[rndIndex]
 #                if(not g2 in child):
 #                    child.append(g2)
 #            else :
-#                break
+#                return child
 #        
-#        probability = random.randint(0,100)
-#        if(probability > mutationProbability):
-#            if ( len ( children ) == 1 ):
-#                child = mutate2( child , children[0] )
-#            else :
-#                child = mutate(child)        
-#        if ( len(children) > 0 ):
-#            if(sameTwoChildren(child,children[0]) == True ):
-#                write2.append("Same Child Born")
-#                i -= 1
-#                allowed = False
-#            else :
-#                allowed = True
-#        if ( allowed ): 
-#            children.append(child)
-#            write2.append(child)            
-#        i += 1
-    child1 = []
-    while(True):
-
-        if(len(child1) < parentsLength ):
-            rndIndex = random.randint(-4,4)
-            g1 = father[rndIndex]
-            if(not g1 in child1):
-                child1.append(g1)
-        
-        if(len(child1) < parentsLength ):
-            rndIndex = random.randint(-4,4)
-            g2 = mother[rndIndex]
-            if(not g2 in child1):
-                child1.append(g2)
-        else :
-            break
-
-    child2 = []
-    for item in range(1,11):
-        if(not item in child1):
-            child2.append(item)
-    children = [child1,child2]
+#    child1 = mix(mother,father)
+#    
+#
+#    child2 = []
+#    probability = random.randint(0,100)
+#    if(probability > mutationProbability):
+#        child2 = mutate(child1,child2)
+#    else :
+#        child2 = mix(mother,father)
+#     
+#    child2 = mutate(child1,child2)
+#    children = [child1,child2]
     
     return children
 
@@ -242,14 +253,11 @@ def mutate( child ):
         if ( (not rndNumber in child) ):
             child[rndIndex] = rndNumber
             return child
+#    for item in range(1,11):
+#        if(not item in bro):
+#            child.append(item)
+#    return child    
 
-def mutate2( child , brother ):    
-    while True :
-        rndNumber = random.randint(1,10)
-        rndIndex = random.randint(0,4)
-        if ( (not rndNumber in child) and (not rndNumber in brother) ):
-            child[rndIndex] = rndNumber
-            return child
 
 #==================================================
 
