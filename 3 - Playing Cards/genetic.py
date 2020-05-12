@@ -219,11 +219,11 @@ def crossOver( father , mother ):
         i += 1
     return children
 
-def mutate(child):    
+def mutate( child , brother ):    
     while True :
         rndNumber = random.randint(1,10)
         rndIndex = random.randint(0,4)
-        if ( not rndNumber in child ):
+        if ( (not rndNumber in child) and (not rndNumber in brother ) ):
             child[rndIndex] = rndNumber
             return child
 #==================================================
