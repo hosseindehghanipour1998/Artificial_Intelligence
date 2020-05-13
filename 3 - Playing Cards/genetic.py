@@ -7,39 +7,56 @@ Created on Tue May 12 02:00:53 2020
 
 #============ Imports ====================
 import random
-from math import *
-from ExternalLibraries.Writer import Writer as Writer
-from ExternalLibraries.External import External as ExternalLib
-
+import ExternalLibraries.External as ExternalLib
+import matplotlib.pyplot as plt
 #=========================================
 
-class ControlRoom:
-    #Static Arrtibutes
-    goalProduct = 360
-    goalSummation = 36
-    parentsLength = 5 
-    mutationProbability = 40
-    populationLimit = 50
-    generationCounter = 0
-    haltsLimit = 30
-    debugMode = False
-    testCaseNo = 1
+
 #=====================================================
-class FileManager :
-    complete_Writer = Writer("Results/complete.txt")
-    sorter_Writer = Writer("Results/sorter.txt")
-    errors_Writer = Writer("Results/Errors.txt")
+def deportUnworthyPeople(population):
+    if(ExternalLib.ControlRoom.debugMode):
+         ExternalLib.FileManager.errors_Writer.append("DEPORT ONWORTHY")
+    worthyPop = []
+    sum_nums = [] 
+    prod_nums = []
+    for item in population:
+        summ , prod = ExternalLib.caculateFactors(item)
+        prod,summ = utility(summ,prod)
+        sum_nums.append(summ)
+        prod_nums.append(prod)
+    
+    pop1 = []
+    pop2 = []
+    for item in population:
+        pop1.append(item)
+        pop2.append(item)
+    ExternalLib.FileManager.sorter_Writer.append("====================== SUM==========================")
+    ExternalLib.bubble_sort(sum_nums,pop1)  
+    ExternalLib.FileManager.sorter_Writer.append("====================== PROD ==========================")
+    ExternalLib.bubble_sort(prod_nums,pop2)
+    i = 0 
+    while i < ExternalLib.ControlRoom.populationLimit/2 :
+        worthyPop.append(pop1[i])
+        i += 1
+    i = 0 
+
+    for item in pop2 :
+        if(len(worthyPop) == ExternalLib.ControlRoom.populationLimit ):
+            break
+        if ( not item in worthyPop):           
+            worthyPop.append(pop2[i])           
+    return worthyPop
 
 #================ Extera Functions====================
 
 def isSolution(children):
-    if(ControlRoom.debugMode):
-        FileManager.errors_Writer.append("Is solution")
+    if(ExternalLib.ControlRoom.debugMode):
+        ExternalLib.FileManager.errors_Writer.append("Is solution")
     child_1_Summation , child_1_Production = ExternalLib.caculateFactors(children[0])
     child_2_Summation , child_2_Production = ExternalLib.caculateFactors(children[1])
     if(   
-       ((child_1_Summation == ControlRoom.goalSummation and child_2_Production == ControlRoom.goalProduct ) or 
-       (child_2_Summation == ControlRoom.goalSummation and child_1_Production == ControlRoom.goalProduct )) and ExternalLib.haveIntersection(children) == False ) :
+       ((child_1_Summation == ExternalLib.ControlRoom.goalSummation and child_2_Production == ExternalLib.ControlRoom.goalProduct ) or 
+       (child_2_Summation == ExternalLib.ControlRoom.goalSummation and child_1_Production == ExternalLib.ControlRoom.goalProduct )) and ExternalLib.haveIntersection(children) == False ) :
         return True
 
   
@@ -51,16 +68,16 @@ def getBestN(population , exception = False):
     sumChild = None
     prodChild = None
     for child in population : 
-        if(ControlRoom.debugMode):
-            FileManager.errors_Writer.append("GBN - FOR 1")
+        if(ExternalLib.ControlRoom.debugMode):
+            ExternalLib.FileManager.errors_Writer.append("GBN - FOR 1")
         summ , prod = ExternalLib.caculateFactors(child)
         util_prod , util_Sum = utility( summ , prod )
         if ( util_prod <= minimumProd) :
             prodChild = child
             minimumProd = util_prod
     for child in population :    
-        if(ControlRoom.debugMode):
-            FileManager.errors_Writer.append("GBS - FOR 2")
+        if(ExternalLib.ControlRoom.debugMode):
+            ExternalLib.FileManager.errors_Writer.append("GBS - FOR 2")
         summ , prod = ExternalLib.caculateFactors(child)
         util_prod , util_Sum = utility( summ , prod )
         if ( util_Sum <= minimumSum and (ExternalLib.haveIntersection((prodChild,child)) == False  or exception )):
@@ -74,22 +91,22 @@ def getBestN(population , exception = False):
 #================ Main Functions====================
     
 def utility(childSum , childProduct ):
-    if(ControlRoom.debugMode):
-        FileManager.errors_Writer.append("UTILITY")
-    return (abs(1 -  float(childProduct/ControlRoom.goalProduct) ), abs(ControlRoom.goalSummation - childSum) )
+    if(ExternalLib.ControlRoom.debugMode):
+        ExternalLib.FileManager.errors_Writer.append("UTILITY")
+    return (abs(1 -  float(childProduct/ExternalLib.ControlRoom.goalProduct) ), abs(ExternalLib.ControlRoom.goalSummation - childSum) )
 
 def crossOver( father , mother ): 
-    if(ControlRoom.debugMode):
-        FileManager.errors_Writer.append("CROSS OVER")
+    if(ExternalLib.ControlRoom.debugMode):
+        ExternalLib.FileManager.errors_Writer.append("CROSS OVER")
     child1 = []
     while True :
-        if(ControlRoom.debugMode):
-            FileManager.errors_Writer.append("CROSS OVER - WHILE 1")
-        if(len(child1) < ControlRoom.parentsLength ):
+        if(ExternalLib.ControlRoom.debugMode):
+            ExternalLib.FileManager.errors_Writer.append("CROSS OVER - WHILE 1")
+        if(len(child1) < ExternalLib.ControlRoom.parentsLength ):
             rnd = random.randint(-4,4)
             if (not mother[rnd]  in child1):
                 child1.append(mother[rnd])
-        if(len(child1) < ControlRoom.parentsLength):
+        if(len(child1) < ExternalLib.ControlRoom.parentsLength):
             rnd = random.randint(-4,4)
             if (not father[rnd]  in child1):
                 child1.append(father[rnd])
@@ -99,8 +116,8 @@ def crossOver( father , mother ):
     for item in range(1,11):
         if(not item in child1):
             child2.append(item)
-    prob = random.randint(0,100)
-    if(prob > ControlRoom.mutationProbability):
+    probability = random.randint(0,100)
+    if(probability > ExternalLib.ControlRoom.mutationProbability):
         child1 , child2 = mutate(child1,child2)        
     return (child1,child2)
 
@@ -118,62 +135,95 @@ def mutate( child , bro):
 #==================================================
 
 def environmet():
-    ControlRoom.generationCounter
-    FileManager.complete_Writer.clearFile()
-    FileManager.sorter_Writer.clearFile()
-    population = []
+    ExternalLib.ControlRoom.generationCounter
+    ExternalLib.ControlRoom.population = []
+    ExternalLib.FileManager.complete_Writer.clearFile()
+    ExternalLib.FileManager.sorter_Writer.clearFile()
     
     
-
-    
-    parents = ExternalLib.createRandomParents(ControlRoom.parentsLength)
-    
-    mother = parents[0]
-    father = parents[1]
-    
-    population.append(mother)
-    population.append(father)
-
+    mother , father = ExternalLib.createRandomParents(ExternalLib.ControlRoom.parentsLength)
 
     while True :
-        print(ControlRoom.generationCounter)
+        
+        print(ExternalLib.ControlRoom.generationCounter)
         newBornChildren = crossOver(mother,father)
-        FileManager.complete_Writer.append("===========================")
-        FileManager.complete_Writer.append("Newborn : " + str(newBornChildren))
-        if ( newBornChildren[0] != None ):
-            population.append(newBornChildren[0])
-        if ( newBornChildren[1] != None ):
-            population.append(newBornChildren[1])
+        
+        # Writing in File
+        ExternalLib.FileManager.complete_Writer.append("===========================")
+        ExternalLib.FileManager.complete_Writer.append("Newborn : " + str(newBornChildren))
+        
+        
+        # Creating population
+        ExternalLib.ControlRoom.population.append(newBornChildren[0])
+        ExternalLib.ControlRoom.population.append(newBornChildren[1])
+        #System may halt for  bad test cases. this attributes avoids halting
         haltCounter = 0 
         showException = False
         while True : #Loop 2
-            if ( haltCounter >= ControlRoom.haltsLimit ):
+            if ( haltCounter >= ExternalLib.ControlRoom.haltsLimit ):
                 showException = True
-            newParents = getBestN(population , exception=showException)
+            newParents = getBestN(ExternalLib.ControlRoom.population , exception=showException)
             if ( newParents[0] != None and newParents[1] != None  ):
                 mother , father = newParents
                 break
             haltCounter += 1
-        FileManager.complete_Writer.append(ControlRoom.generationCounter)
-        FileManager.complete_Writer.append("Parents : " + str(newParents))
-        FileManager.complete_Writer.append(population)
-        FileManager.complete_Writer.append(len(population))
         
+        # Writing in File
+        ExternalLib.FileManager.complete_Writer.append(ExternalLib.ControlRoom.generationCounter)
+        ExternalLib.FileManager.complete_Writer.append("Parents : " + str(newParents))
+        ExternalLib.ControlRoom.succeededProdParents.append(newParents[0])
+        ExternalLib.ControlRoom.succeededSumParents.append(newParents[1])
+        ExternalLib.FileManager.complete_Writer.append(ExternalLib.ControlRoom.population)
+        ExternalLib.FileManager.complete_Writer.append(len(ExternalLib.ControlRoom.population))
         
-        if ( len(population) >= ControlRoom.populationLimit ):
-            population = ExternalLib.deportUnworthyPeople(population)
+        # Eliminating Unworthy Population
+        if ( len(ExternalLib.ControlRoom.population) >= ExternalLib.ControlRoom.populationLimit ):
+            ExternalLib.ControlRoom.population = deportUnworthyPeople(ExternalLib.ControlRoom.population)
             
         if( isSolution(newParents) == True ):
             print("Found Solution")
             return newParents
-        ControlRoom.generationCounter += 1
+        ExternalLib.ControlRoom.generationCounter += 1
 
-
+def plotUtilities():
+    curveOneXs = []
+    curveOneYs = []
+    
+    curveTwoXs = []
+    curveTwoYs = []
+    
+    xValue = 0
+    for parent in ExternalLib.ControlRoom.succeededProdParents :
+        childSum , childProduct = ExternalLib.caculateFactors(parent)
+        productU , summationU  = utility(childSum,childProduct)
+        
+        
+        #productU = ( productU + 1 ) * ExternalLib.ControlRoom.goalProduct 
+        #products
+        curveTwoXs.append(xValue)
+        curveTwoYs.append(productU) 
+        xValue += 1
+    
+   
+    xValue = 0   
+    for parent in ExternalLib.ControlRoom.succeededSumParents :
+        childSum , childProduct = ExternalLib.caculateFactors(parent)
+        productU , summationU   = utility(childSum,childProduct)
+        #Sums
+        curveOneXs.append(xValue)
+        curveOneYs.append(summationU + ExternalLib.ControlRoom.goalSummation )
+        xValue += 1
+        
+    plt.plot(curveOneXs,curveOneYs , color="blue" , label = "Summation")
+    plt.plot(curveTwoXs,curveTwoYs , color="red", label = "Production")
+    plt.legend()
+    
+        
         
 
 def main():
     results = []
-    for i in range (0,ControlRoom.testCaseNo) :           
+    for i in range (0,ExternalLib.ControlRoom.testCaseNo) :           
         print("Calculating...")
         sol = environmet()
         results.append(sol)
@@ -183,6 +233,7 @@ def main():
     print(len(results))
     for item in results:
         print(item)
+    plotUtilities()
         
 main()            
         

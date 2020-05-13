@@ -1,10 +1,32 @@
 import random
-import genetic
-from genetic import ControlRoom as CR
-from genetic import FileManager as FM
+
+from ExternalLibraries.Writer import Writer as Writer
+
+class ControlRoom:
+    #Static Arrtibutes
+    succeededSumParents = []
+    succeededProdParents = []
+    population = []
+    goalProduct = 360
+    goalSummation = 36
+    parentsLength = 5 
+    mutationProbability = 40
+    populationLimit = 50
+    generationCounter = 0
+    haltsLimit = 30
+    debugMode = False
+    testCaseNo = 1
+
+class FileManager :
+    complete_Writer = Writer("Results/complete.txt")
+    sorter_Writer = Writer("Results/sorter.txt")
+    errors_Writer = Writer("Results/Errors.txt")
+
+
+
 def bubble_sort(nums,pop):
-    if(CR.debugMode):
-        FM.errors_Writer.append("BUBBLE SORT")
+    if(ControlRoom.debugMode):
+         FileManager.errors_Writer.append("BUBBLE SORT")
     swapped = True
     while swapped:
         swapped = False
@@ -16,15 +38,15 @@ def bubble_sort(nums,pop):
                 # Set the flag to True so we'll loop again
                 swapped = True
                
-    FM.sorter_Writer.append("IT : \n %s" % (CR.generationCounter) )           
-    FM.sorter_Writer.append(nums)
-    FM.sorter_Writer.append(pop)
+    FileManager.sorter_Writer.append("IT : \n %s" % (ControlRoom.generationCounter) )           
+    FileManager.sorter_Writer.append(nums)
+    FileManager.sorter_Writer.append(pop)
 
 
 
 def findIntersection(c1,c2):
-    if(CR.debugMode):
-        FM.errors_Writer.append("FIND INTERSECTION")
+    if(ControlRoom.debugMode):
+         FileManager.errors_Writer.append("FIND INTERSECTION")
     for i in c1 :
         if(i in c2):
             return c2.index(i)
@@ -32,8 +54,8 @@ def findIntersection(c1,c2):
 
 
 def haveIntersection(children):
-    if(CR.debugMode):
-        FM.errors_Writer.append("Hvae Intersection")
+    if(ControlRoom.debugMode):
+         FileManager.errors_Writer.append("Hvae Intersection")
     for item in children[0]:
         if(item in children[1]):
             return True
@@ -42,8 +64,8 @@ def haveIntersection(children):
 
 
 def sameTwoChildren(childOne , childTwo):
-    if(CR.debugMode):
-        FM.errors_Writer.append("Same Two Children")
+    if(ControlRoom.debugMode):
+        FileManager.errors_Writer.append("Same Two Children")
     appearance = 0 
     for item in childOne :
         if ( not item in childTwo ):
@@ -56,45 +78,11 @@ def sameTwoChildren(childOne , childTwo):
 
 
     
-def deportUnworthyPeople(population):
-    if(CR.debugMode):
-        FM.errors_Writer.append("DEPORT ONWORTHY")
-    worthyPop = []
-    sum_nums = [] 
-    prod_nums = []
-    for item in population:
-        summ , prod = caculateFactors(item)
-        prod,summ = genetic.utility(summ,prod)
-        sum_nums.append(summ)
-        prod_nums.append(prod)
-    
-    pop1 = []
-    pop2 = []
-    for item in population:
-        pop1.append(item)
-        pop2.append(item)
-    FM.sorter_Writer.append("====================== SUM==========================")
-    bubble_sort(sum_nums,pop1)  
-    FM.sorter_Writer.append("====================== PROD ==========================")
-    bubble_sort(prod_nums,pop2)
-    i = 0 
-    while i < CR.populationLimit/2 :
-        worthyPop.append(pop1[i])
-        i += 1
-    i = 0 
-
-    for item in pop2 :
-        if(len(worthyPop) == CR.populationLimit ):
-            break
-        if ( not item in worthyPop):           
-            worthyPop.append(pop2[i])
-            
-    return worthyPop
 
 
 def caculateFactors(child):
-    if(CR.debugMode):
-        FM.errors_Writer.append("Calculate Factor")
+    if(ControlRoom.debugMode):
+         FileManager.errors_Writer.append("Calculate Factor")
     summation = 0 
     production = 1  
 #    print("Len : " + str((child)))
@@ -105,8 +93,8 @@ def caculateFactors(child):
   
     
 def createRandomParents(parentsLength):
-    if(CR.debugMode):
-        FM.errors_Writer.append("Create Random Parents")
+    if(ControlRoom.debugMode):
+         FileManager.errors_Writer.append("Create Random Parents")
     mother = []
     father = []
     i = 0 
@@ -119,13 +107,15 @@ def createRandomParents(parentsLength):
     for i in range (1,11):
         if ( not i in mother ):
             father.append(i)
+    ControlRoom.population.append(mother)
+    ControlRoom.population.append(father)
     return (mother,father)  
 
 
 
 def countOverlap(li1 , li2):
-    if(CR.debugMode):
-        FM.errors_Writer.append("COUNT OVERLAP")
+    if(ControlRoom.debugMode):
+         FileManager.errors_Writer.append("COUNT OVERLAP")
     overlap = 0 
     for item in li1 :
         if(item in li2):
@@ -133,5 +123,6 @@ def countOverlap(li1 , li2):
     return overlap  
 
 
+        
 
 
