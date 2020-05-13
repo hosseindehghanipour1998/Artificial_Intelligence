@@ -129,9 +129,6 @@ def mutate( child , bro):
             child[rnd] = bro[rnd]
             bro[rnd] = x
             return child,bro
-    
-
-
 #==================================================
 
 def environmet():
