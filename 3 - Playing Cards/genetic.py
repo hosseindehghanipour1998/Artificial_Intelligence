@@ -88,8 +88,12 @@ def elite(population):
            if ( ExternalLib.haveIntersection((prod_elite,child)) == False ):
                sum_elite = child
                return (prod_elite,sum_elite)
-       
-       prodIndex += 1
+       if ( prodIndex < len(sortedPop_Prod)):
+            prod_elite = sortedPop_Prod[prodIndex]
+            prodIndex += 1
+        
+       else:
+            break
     
     prodIndex = 0 
     prod_elite = sortedPop_Prod[prodIndex]
@@ -103,11 +107,16 @@ def elite(population):
                 minIntersection = overlap
                 sum_elite = child
                 chosenProdElite = prod_elite
-        prodIndex += 1
+        if ( prodIndex < len(sortedPop_Prod)):
+            prod_elite = sortedPop_Prod[prodIndex]
+            prodIndex += 1
+        else:
+            break
     if ( chosenProdElite != None and sum_elite != None ):
         return (chosenProdElite,sum_elite)
     else :
         return (sortedPop_Prod[0] , sortedPop_Sum[0] )
+
         
 
 def getBestN(population , exception = False):
@@ -308,7 +317,7 @@ def environmet():
                 haltCounter += 1
                 
         elif (ExternalLib.ControlRoom.chooseBestNVersion == 2 ):
-            newParents = getBestN(ExternalLib.ControlRoom.population , exception=showException)
+            newParents = elite(ExternalLib.ControlRoom.population)
             mother , father = newParents
         
         # Writing in File
