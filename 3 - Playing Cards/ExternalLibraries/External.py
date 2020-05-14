@@ -1,5 +1,5 @@
 import random
-
+import math
 from ExternalLibraries.Writer import Writer as Writer
 
 class ControlRoom:
@@ -15,7 +15,7 @@ class ControlRoom:
     generationCounter = 0
     haltsLimit = 30
     debugMode = False
-    testCaseNo = 1
+    testCaseNo = 10
 
 class FileManager :
     complete_Writer = Writer("Results/complete.txt")
@@ -122,7 +122,20 @@ def countOverlap(li1 , li2):
             overlap += 1
     return overlap  
 
-
+def sigmoid(x):  
+    return (  1 / ( 1 + math.exp( x * -1 ) )  )
+    
+def scale(y):
+    # give me product number
+    return y/3.93
         
-
+def saveFig(plotPointer , figName , figNumbPath ):
+    filerIO = Writer(figNumbPath)
+    lines = filerIO.readFile()
+    if ( len(lines) == 0 ):
+        filerIO.append(1) 
+        lines[0] = 1 
+    plotPointer.savefig( str(figName) + str(lines[0]) + '.png')
+    filerIO.clearFile()
+    filerIO.append(str(int(lines[0]) + 1) ) 
 

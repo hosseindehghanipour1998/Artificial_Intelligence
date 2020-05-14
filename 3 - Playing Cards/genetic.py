@@ -193,10 +193,10 @@ def environmet():
             
         if( isSolution(newParents) == True ):
             print("Found Solution")
-            return newParents
+            return newParents,generationCounter
         ExternalLib.ControlRoom.generationCounter += 1
 
-def plotUtilities():
+def plotUtilitiesDistinctively():
     curveOneXs = []
     curveOneYs = []
     
@@ -228,15 +228,46 @@ def plotUtilities():
     plt.plot(curveOneXs,curveOneYs , color="blue" , label = "Summation")
     plt.plot(curveTwoXs,curveTwoYs , color="red", label = "Production")
     plt.legend()
+    plt.show()
     
+def plotUtilitiesOverall(generationsNumber = "Z"):
+    curveOneXs = []
+    curveOneYs = []
+    
+    productionUtilies = []
+    summationUtilities = []
+     
+    xValue = 0
+    for parent in ExternalLib.ControlRoom.succeededProdParents :
+        childSum , childProduct = ExternalLib.caculateFactors(parent)
+        productU , summationU  = utility(childSum,childProduct)
+        #Prods
+        productionUtilies.append(productU)
         
+    for parent in ExternalLib.ControlRoom.succeededSumParents :
+        childSum , childProduct = ExternalLib.caculateFactors(parent)
+        productU , summationU   = utility(childSum,childProduct)
+        #Sums
+        summationUtilities.append(summationU)
         
+    for index in  range(0,len(summationUtilities)):
+        curveOneXs.append(xValue)
+        xValue += 1
+        scaledY = summationUtilities[index] + ExternalLib.scale(productionUtilies[index])
+        curveOneYs.append(scaledY)
+
+           
+    plt.plot(curveOneXs,curveOneYs , color="blue" , label = "Overal Utility")
+    plt.legend() 
+    plotTitle = "Plots/Overall_Utility_#Generations[" + str(generationsNumber) + "]_"
+    ExternalLib.saveFig(plt , plotTitle , "Plots/figureNumber.txt" )
+    plt.show()    
 
 def main():
     results = []
     for i in range (0,ExternalLib.ControlRoom.testCaseNo) :           
         print("Calculating...")
-        sol = environmet()
+        sol,generations = environmet()
         results.append(sol)
         print(str(sol[0]) + "\n" + str(sol[1]))
         print("Done!")
@@ -244,7 +275,8 @@ def main():
     print(len(results))
     for item in results:
         print(item)
-    plotUtilities()
+    plotUtilitiesDistinctively()
+    plotUtilitiesOverall(generations)
         
 main()            
         
