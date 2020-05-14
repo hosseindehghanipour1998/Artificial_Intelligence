@@ -260,6 +260,15 @@ def mutate( child , bro):
             child[rnd] = bro[rnd]
             bro[rnd] = x
             return child,bro
+
+
+def setWritersPaths():
+        # Set new path for writers
+    ExternalLib.FileManager.complete_Writer = Writer(str(ExternalLib.ControlRoom.projectFilesDirectory) + "/complete.txt")
+    ExternalLib.FileManager.sorter_Writer = Writer(str(ExternalLib.ControlRoom.projectFilesDirectory) + "/sorter.txt")
+    ExternalLib.FileManager.errors_Writer = Writer(str(ExternalLib.ControlRoom.projectFilesDirectory) + "/Errors.txt")
+    ExternalLib.FileManager.testCase_Writer = Writer(str(ExternalLib.ControlRoom.projectFilesDirectory) + "/testcaseMonitor.txt")
+    
 #==================================================
 
 def environmet():
@@ -343,15 +352,9 @@ def environmet():
 def main():
     results = []
     testCaseGenerations = []
-    ExternalLib.FileManager.testCase_Writer.clearFile()
     ExternalLib.createNewDirectory("testSet","Plots/FolderNumber.txt")
-    
-    # Set new path for writers
-    ExternalLib.FileManager.complete_Writer = Writer(str(ControlRoom.projectFilesDirectory) + "/complete.txt")
-    ExternalLib.FileManager.sorter_Writer = Writer(str(ControlRoom.projectFilesDirectory) + "/sorter.txt")
-    ExternalLib.FileManager.errors_Writer = Writer(str(ControlRoom.projectFilesDirectory) + "/Errors.txt")
-    ExternalLib.FileManager.testCase_Writer = Writer(str(ControlRoom.projectFilesDirectory) + "/testcaseMonitor.txt")
-    
+    setWritersPaths()
+    ExternalLib.FileManager.testCase_Writer.clearFile()
     
     for i in range (0,ExternalLib.ControlRoom.testCaseNo) :           
         print("Calculating...")
