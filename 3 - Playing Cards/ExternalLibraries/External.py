@@ -1,9 +1,10 @@
 import random
 import math
 from ExternalLibraries.Writer import Writer as Writer
-
+import os
 class ControlRoom:
     #Static Arrtibutes
+    projectFilesDirectory = ""
     succeededSumParents = []
     succeededProdParents = []
     population = []
@@ -23,14 +24,16 @@ class ControlRoom:
         ControlRoom.population = []
         ControlRoom.succeededSumParents = []
         ControlRoom.succeededProdParents = []
-        
+    
+    def setFilesPath(path):
+        ControlRoom.projectFilesDirectory = path
 
 
 class FileManager :
-    complete_Writer = Writer("Results/complete.txt")
-    sorter_Writer = Writer("Results/sorter.txt")
-    errors_Writer = Writer("Results/Errors.txt")
-    testCase_Writer = Writer("Results/testcaseMonitor.txt")
+    complete_Writer = None
+    sorter_Writer = None
+    errors_Writer = None
+    testCase_Writer = None
 
 
 def bubble_sort(nums,pop):
@@ -148,3 +151,13 @@ def saveFig(plotPointer , figName , figNumbPath ):
     filerIO.clearFile()
     filerIO.append(str(int(lines[0]) + 1) ) 
 
+def createNewDirectory(folderBaseName,foldNumbPath):
+    filerIO = Writer(foldNumbPath)
+    lines = filerIO.readFile()
+    if ( len(lines) == 0 ):
+        filerIO.append(1)        
+        lines[0] = 1
+    os.mkdir( "Plots/" + str(folderBaseName) +" " +str(lines[0]) + "  V" +  str(ControlRoom.chooseBestNVersion))   
+    ControlRoom.projectFilesDirectory = "Plots/" + str(folderBaseName) +" " +str(lines[0]) + "  V" +  str(ControlRoom.chooseBestNVersion)
+    filerIO.clearFile()
+    filerIO.append(str(int(lines[0]) + 1) ) 

@@ -9,6 +9,7 @@ Created on Tue May 12 02:00:53 2020
 import random
 import ExternalLibraries.External as ExternalLib
 import matplotlib.pyplot as plt
+from ExternalLibraries.Writer import Writer as Writer
 #=========================================
 
 
@@ -107,9 +108,10 @@ def elite(population):
                 minIntersection = overlap
                 sum_elite = child
                 chosenProdElite = prod_elite
-        if ( prodIndex < len(sortedPop_Prod)):
-            prod_elite = sortedPop_Prod[prodIndex]
+        if ( prodIndex < len(sortedPop_Prod) - 1):
             prodIndex += 1
+            prod_elite = sortedPop_Prod[prodIndex]
+            
         else:
             break
     if ( chosenProdElite != None and sum_elite != None ):
@@ -177,7 +179,7 @@ def plotUtilitiesDistinctively(generationsNumber = "?"):
     plt.plot(curveOneXs,curveOneYs , color="blue" , label = "Summation")
     plt.plot(curveTwoXs,curveTwoYs , color="red", label = "Production")
     plt.legend()
-    plotTitle = "Plots/Disctinct#NoOfGens[" + str(generationsNumber) + "]_"
+    plotTitle = str(ExternalLib.ControlRoom.projectFilesDirectory) + "/Disctinct#NoOfGens[" + str(generationsNumber) + "]_"
     ExternalLib.saveFig(plt , plotTitle , "Plots/figureNumber.txt" )
     plt.show()  
     
@@ -211,7 +213,7 @@ def plotUtilitiesOverall(generationsNumber = "Z"):
            
     plt.plot(curveOneXs,curveOneYs , color="blue" , label = "Overal Utility")
     plt.legend() 
-    plotTitle = "Plots/Overall_#NoOfGens[" + str(generationsNumber) + "]_"
+    plotTitle = str(ExternalLib.ControlRoom.projectFilesDirectory) + "/Overall_#NoOfGens[" + str(generationsNumber) + "]_"
     ExternalLib.saveFig(plt , plotTitle , "Plots/figureNumber.txt" )
     plt.show()    
 
@@ -267,17 +269,17 @@ def environmet():
     ExternalLib.FileManager.sorter_Writer.clearFile()
     generationCounter = 0
     generationMinitor = 0 
-    
+    ExternalLib.ControlRoom.restart()
     mother , father = ExternalLib.createRandomParents(ExternalLib.ControlRoom.parentsLength)
     
     ExternalLib.FileManager.testCase_Writer.append("Initial Parents : %s | %s" %(mother , father) )
-    
+    print("initial Parents : %s | %s" %(mother , father) )
     print("=========================================" )
     print("Generation Number : %s" %generationCounter)
     print("=========================================" )
     
-    print("initial Parents : %s | %s" %(mother , father) )
-    ExternalLib.ControlRoom.restart()
+    
+    
     while True :
         
         # Controling generation
@@ -310,7 +312,7 @@ def environmet():
             while True : #Loop 2
                 if ( haltCounter >= ExternalLib.ControlRoom.haltsLimit ):
                     showException = True
-                newParents = elite(ExternalLib.ControlRoom.population)
+                newParents = getBestN(ExternalLib.ControlRoom.population , showException)
                 if ( newParents[0] != None and newParents[1] != None  ):
                     mother , father = newParents
                     break
@@ -340,7 +342,17 @@ def environmet():
 
 def main():
     results = []
+    testCaseGenerations = []
     ExternalLib.FileManager.testCase_Writer.clearFile()
+    ExternalLib.createNewDirectory("testSet","Plots/FolderNumber.txt")
+    
+    # Set new path for writers
+    ExternalLib.FileManager.complete_Writer = Writer(str(ControlRoom.projectFilesDirectory) + "/complete.txt")
+    ExternalLib.FileManager.sorter_Writer = Writer(str(ControlRoom.projectFilesDirectory) + "/sorter.txt")
+    ExternalLib.FileManager.errors_Writer = Writer(str(ControlRoom.projectFilesDirectory) + "/Errors.txt")
+    ExternalLib.FileManager.testCase_Writer = Writer(str(ControlRoom.projectFilesDirectory) + "/testcaseMonitor.txt")
+    
+    
     for i in range (0,ExternalLib.ControlRoom.testCaseNo) :           
         print("Calculating...")
         sol,generations = environmet()
@@ -349,13 +361,14 @@ def main():
         print("Done!")
         plotUtilitiesDistinctively(generations)
         plotUtilitiesOverall(generations)
-        
+        testCaseGenerations.append(generations)
         ExternalLib.FileManager.testCase_Writer.append("Number of Generations : %s \n=====================================" %generations )
     print("Totally Done")
     print(len(results))
     for item in results:
         print(item)
-
+    
+    ExternalLib.FileManager.testCase_Writer.append("=======\n Min : %s\n Max : %s \n Avg : %s\n=======" %(min(testCaseGenerations) , max(testCaseGenerations) , round(sum(testCaseGenerations)/len(testCaseGenerations),2)) )
         
 main()            
         
