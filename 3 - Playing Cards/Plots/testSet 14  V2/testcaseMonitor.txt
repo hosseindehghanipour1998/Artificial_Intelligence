@@ -1,0 +1,35 @@
+Initial Parents : [4, 2, 8, 5, 9] | [1, 3, 6, 7, 10]
+Number of Generations : 10 
+=====================================
+Initial Parents : [1, 2, 3, 9, 8] | [4, 5, 6, 7, 10]
+Number of Generations : 4 
+=====================================
+Initial Parents : [8, 3, 7, 6, 1] | [2, 4, 5, 9, 10]
+Number of Generations : 12 
+=====================================
+Initial Parents : [5, 3, 6, 10, 2] | [1, 4, 7, 8, 9]
+Number of Generations : 0 
+=====================================
+Initial Parents : [7, 5, 2, 9, 1] | [3, 4, 6, 8, 10]
+Number of Generations : 7 
+=====================================
+Initial Parents : [2, 5, 6, 9, 10] | [1, 3, 4, 7, 8]
+Number of Generations : 0 
+=====================================
+Initial Parents : [4, 6, 5, 10, 3] | [1, 2, 7, 8, 9]
+Number of Generations : 0 
+=====================================
+Initial Parents : [10, 7, 3, 2, 9] | [1, 4, 5, 6, 8]
+Number of Generations : 6 
+=====================================
+Initial Parents : [4, 10, 7, 5, 3] | [1, 2, 6, 8, 9]
+Number of Generations : 0 
+=====================================
+Initial Parents : [7, 4, 1, 5, 6] | [2, 3, 8, 9, 10]
+Number of Generations : 1 
+=====================================
+=======
+ Min : 0
+ Max : 12 
+ Avg : 4.0
+=======

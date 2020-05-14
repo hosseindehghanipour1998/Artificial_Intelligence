@@ -362,7 +362,7 @@ def main():
         results.append(sol)
         print(str(sol[0]) + "\n" + str(sol[1]))
         print("Done!")
-        plotUtilitiesDistinctively(generations)
+     
         plotUtilitiesOverall(generations)
         testCaseGenerations.append(generations)
         ExternalLib.FileManager.testCase_Writer.append("Number of Generations : %s \n=====================================" %generations )

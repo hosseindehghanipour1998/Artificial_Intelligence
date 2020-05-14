@@ -11,13 +11,15 @@ class ControlRoom:
     goalProduct = 360
     goalSummation = 36
     parentsLength = 5 
-    mutationProbability = 40
-    populationLimit = 50
     generationCounter = 0
     haltsLimit = 30
     debugMode = False
+   
+    # What You may want to change :
     testCaseNo = 10
-    chooseBestNVersion = 2
+    chooseBestNVersion = 1
+    populationLimit = 100
+    mutationProbability = 40
     
     @classmethod
     def restart(self):
