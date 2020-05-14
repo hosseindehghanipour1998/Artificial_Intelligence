@@ -29,7 +29,7 @@ class FileManager :
     complete_Writer = Writer("Results/complete.txt")
     sorter_Writer = Writer("Results/sorter.txt")
     errors_Writer = Writer("Results/Errors.txt")
-
+    testCase_Writer = Writer("Results/testcaseMonitor.txt")
 
 
 def bubble_sort(nums,pop):
