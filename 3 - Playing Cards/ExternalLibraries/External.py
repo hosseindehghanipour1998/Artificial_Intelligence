@@ -16,6 +16,14 @@ class ControlRoom:
     haltsLimit = 30
     debugMode = False
     testCaseNo = 10
+    
+    @classmethod
+    def restart(self):
+        ControlRoom.population = []
+        ControlRoom.succeededSumParents = []
+        ControlRoom.succeededProdParents = []
+        
+
 
 class FileManager :
     complete_Writer = Writer("Results/complete.txt")

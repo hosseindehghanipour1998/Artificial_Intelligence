@@ -143,6 +143,9 @@ def environmet():
     print("=========================================" )
     print("Generation Number : %s" %generationCounter)
     print("=========================================" )
+    
+    print("initial Parents : %s | %s" %(mother , father) )
+    ExternalLib.ControlRoom.restart()
     while True :
         
         # Controling generation
@@ -271,12 +274,13 @@ def main():
         results.append(sol)
         print(str(sol[0]) + "\n" + str(sol[1]))
         print("Done!")
+        plotUtilitiesDistinctively()
+        plotUtilitiesOverall(generations)
     print("Totally Done")
     print(len(results))
     for item in results:
         print(item)
-    plotUtilitiesDistinctively()
-    plotUtilitiesOverall(generations)
+
         
 main()            
         
