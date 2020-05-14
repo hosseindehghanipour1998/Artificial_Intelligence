@@ -136,10 +136,14 @@ def environmet():
     ExternalLib.ControlRoom.population = []
     ExternalLib.FileManager.complete_Writer.clearFile()
     ExternalLib.FileManager.sorter_Writer.clearFile()
+    ExternalLib.FileManager.testCase_Writer.clearFile()
     generationCounter = 0
     generationMinitor = 0 
     
     mother , father = ExternalLib.createRandomParents(ExternalLib.ControlRoom.parentsLength)
+    
+    ExternalLib.FileManager.testCase_Writer.append("Initial Parents : %s | %s" %(mother , father) )
+    
     print("=========================================" )
     print("Generation Number : %s" %generationCounter)
     print("=========================================" )
@@ -262,7 +266,7 @@ def plotUtilitiesOverall(generationsNumber = "Z"):
            
     plt.plot(curveOneXs,curveOneYs , color="blue" , label = "Overal Utility")
     plt.legend() 
-    plotTitle = "Plots/Overall_Utility_#Generations[" + str(generationsNumber) + "]_"
+    plotTitle = "Plots/Overall_#NoOfGens[" + str(generationsNumber) + "]_"
     ExternalLib.saveFig(plt , plotTitle , "Plots/figureNumber.txt" )
     plt.show()    
 
@@ -276,6 +280,8 @@ def main():
         print("Done!")
         plotUtilitiesDistinctively()
         plotUtilitiesOverall(generations)
+        
+        ExternalLib.FileManager.testCase_Writer.append("Number of Generations : %s \n=====================================" %generations )
     print("Totally Done")
     print(len(results))
     for item in results:
