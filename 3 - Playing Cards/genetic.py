@@ -136,13 +136,27 @@ def environmet():
     ExternalLib.ControlRoom.population = []
     ExternalLib.FileManager.complete_Writer.clearFile()
     ExternalLib.FileManager.sorter_Writer.clearFile()
-    
+    generationCounter = 0
+    generationMinitor = 0 
     
     mother , father = ExternalLib.createRandomParents(ExternalLib.ControlRoom.parentsLength)
-
+    print("=========================================" )
+    print("Generation Number : %s" %generationCounter)
+    print("=========================================" )
     while True :
         
-        print(ExternalLib.ControlRoom.generationCounter)
+        # Controling generation
+        generationMinitor += 1
+        if ( generationMinitor == ExternalLib.ControlRoom.populationLimit ):
+            generationMinitor = 0 
+            generationCounter += 1
+            print("=========================================" )
+            print("Generation Number : %s" %generationCounter)
+            print("=========================================" )
+            
+            
+        
+        #print(ExternalLib.ControlRoom.generationCounter)
         newBornChildren = crossOver(mother,father)
         
         # Writing in File
