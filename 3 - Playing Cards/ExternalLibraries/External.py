@@ -16,7 +16,7 @@ class ControlRoom:
     haltsLimit = 30
     debugMode = False
     testCaseNo = 10
-    chooseBestNVersion = 1
+    chooseBestNVersion = 2
     
     @classmethod
     def restart(self):
