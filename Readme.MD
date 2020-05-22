@@ -5,7 +5,8 @@ I have been studying Artificial Intelligence on different embedded systems and p
 
 # Table of Contents
 1. [Pacman](https://github.com/hosseindehghanipour1998/Artificial_Intelligence/tree/master/1-Pacman)
-
+2. [A Hill Climbing Problem](https://github.com/hosseindehghanipour1998/Artificial_Intelligence/tree/master/2%20-%20Hill%20Climbing)
+3. [A Genetic Algorithm](https://github.com/hosseindehghanipour1998/Artificial_Intelligence/tree/master/3%20-%20Playing%20Cards)
 
 
 # License
