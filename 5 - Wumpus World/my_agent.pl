@@ -1,376 +1,204 @@
+%my_agent.pl
 
-% Dynamic Relations :
+
+%   this procedure requires the external definition of two procedures:
 %
-:- load_files([utils]).  % Basic utilities
-:- dynamic(breeze/1).
-:- dynamic(hasGold/0).
-:- dynamic(updateOrientation/1).
-:- dynamic(adjacent_squares/2).
-:- dynamic(updateCoordinate/1).
-:- dynamic(safe/1).
-:- dynamic(pit/2).
-:- dynamic(yMax/1).
-:- dynamic(currentPos/1).
-:- dynamic(prevPos/1).
-:- dynamic(orientation/1).
-:- dynamic(fact/1).
-:- dynamic(updateBump/0).
-:- dynamic(checkFront/0).
-:- dynamic(checkFront/1).
-:- dynamic(xMax/1).
-:- dynamic(wumpusAlive/0).
-:- dynamic(hasArrow/0).
-%===============================================
+%     init_agent: called after new world is initialized.  should perform
+%                 any needed agent initialization.
+%
+%     run_agent(percept,action): given the current percept, this procedure
+%                 should return an appropriate action, which is then
+%                 executed.
+%
+% This is what should be fleshed out
 
 init_agent:-
   format('\n=====================================================\n'),
   format('This is init_agent:\n\tIt gets called once, use it for your initialization\n\n'),
   format('=====================================================\n\n'),
-  resetAgent(),
-  assert(pit(_,_)),
-  retract(pit(1,1)),
-  assert(safe([1,1])),
-  assert(xMax(10000)),
-  assert(yMax(10000)),
-  assert(wumpusAlive),
-  assert(safe([1,2])),
-  assert(safe([2,1])),
-  assert(hasArrow),
-  assert(currentPos([1,1])),
-  assert(visited([1,1])),
-  assert(prevPos([1,1])),
-  assert(orientation(0)),
-  assert(path([turnleft,goforward,turnright])).
-%===============================================
-resetAgent() :-
-  retractall(hasGold),
-  retractall(currentPos([X,Y])),
-  retractall(prevPos(A,B)),
-  retractall(orientation(C)).
-
-%------------------------------------------------------------------------
-
-
-% ==========================================================
-%
-updateOrientation(NextAction) :-
-  orientation(Orient),
-  format("orientation is ~d \n", [Orient]),
-  (NextAction = turnright -> NewOrientation is (Orient - 90) mod 360;
-    (NextAction = turnleft -> NewOrientation is (Orient + 90) mod 360;
-   NewOrientation is Orient)),
-  format("NextAction is ~w \n", [NextAction]),
-  format("New orientation is ~d \n", [NewOrientation]),
-  retractall(orientation(Orient)),
-  assert(orientation(NewOrientation)).
-%===============================================
-
-updateCoordinate(NextAction) :-
-  orientation(Orient),
-  currentPos([X,Y]),
-  postion_calculator(X,Y,NewX,NewY,NextAction),
-  retractall(currentPos(P)),
-  retractall(prevPos(P)),
-  assert(prevPos([X,Y])),
-  assert(currentPos([NewX,NewY])),
-  format("UpdatedCoordinate is [~d,~d]\n",[NewX,NewY]).
+	retractall(gold(_)),       
+	retractall(arrow(_)),      
+	retractall(cl(_,_)), 
+	retractall(pl(_,_)), 
+	retractall(face(_)),
+	retractall(wumdie(_)),
+	retractall(turnback(_)),
+	retractall(nopit(_,_)),
+	retractall(nowumpus(_,_)),
+	retractall(safe1(_,_)),
+	retractall(breeze(_,_)),
+	retractall(stench(_,_)),
+	retractall(wander(_)),
+        retractall(samep(_)),
+	assert(gold(0)),        %record the number of golds obtained
+	assert(arrow(1)),       %record the amount of the arrow 
+	assert(cl(1,1)),  %record the current position of the agent
+	assert(pl(1,1)),  %record the previous position of the agent
+	assert(face(0)),
+	assert(wumdie(0)),
+	assert(turnback(0)),
+	assert(nopit(1,1)),
+	assert(nowumpus(1,1)),
+	assert(safe1(1,1)),
+	assert(breeze(-8,-8)),
+	assert(stench(-8,-8)),
+        assert(wander(0)),
+        assert(samep(0)).
 
 
-%===============================================
-
-% take a turn with 50% possibility for each.
-random_turn(A) :-
-  random2(100,Value),
-  (
-    (A = turnleft , Value>50);
-    (A = turnright , Value<50)
-  ),!.
-%===============================================
-% move forward or left with 50% possibility for each.
-random_walk(A) :-
-  random2(100,Value),
-  (
-    (A = goforward , Value>50);
-    (A = turnleft , Value<50)
-  ),!.
-%===============================================
+run_agent(Percept,Action):-
+	cl(X,Y),
+	assert(safe1(X,Y)),
+	display_world,
+	action(Percept,Action),
+	changelocation(Action),
+        wander(Z),Z1 is Z+1,
+        retractall(wander(_)),
+        assert(wander(Z1)),
+        pl(XP,YP),
+        ((X=XP,Y=YP,samep(KK),KK1 is KK+1,retractall(samep(_)),assert(samep(KK1)));
+        ((X=\=XP;Y=\=YP),retractall(samep(_)),assert(samep(0)))).
+        
+        
 
 
-next_action([H|T], H):-
-  retract(path([H|T])),
-  assert(path(T)).
-
-% ===============================================
-%% **************** Agent's Movements ************
-
-% run_Agent(Percept,Action) : according to the percept chooses what
-% should the action be.
-%
-
-%$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-
-%%     climb:     if in square 1,1, leaves the cave and adds 1000 points
-%                for each piece of gold
-
-run_agent([no,no,no,no,no], climb):-
-  currentPos([1,1]),
-  hasGold,
-  format("Get out of here \n"),
-  format("We have escaped the Cave Successfully \n"),
-  format(" ***************Finished !!!!! ***************\n"),
-  ignore((safety_update,false)),
-  display_world,!.
-
-% $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-%     grab:      pickup gold if in square
-
-run_agent([_,_,yes,_,_], grab):-
-  format("Found the gold and grabbed it \n"),
-  %% updateOrientation(Action),
-  updateCoordinate(grab),
-  assert(hasGold),
-  display_world,!.
-% $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-% goforward: move one square along current orientation if possible
-
-run_agent([_,no,_,_,yes], goforward):-
-  format("Killed Wumpus \n"),
-  retract(wumpusAlive),
-  ignore((safety_update,false)),
-  updateOrientation(goforward),
-  updateCoordinate(goforward),
-  display_world,
-  !.
-% $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-
-% if you sense a stench and the wumpus is also alive , kill it then ->
-% shot the wumpus
-% shoot: shoot an arrow along orientation, killing wumpus if
-%                in that direction
-
-run_agent([yes,_,_,_,_], shoot):-
-  wumpusAlive,
-  hasArrow,
-  format("kill wumpus if alive \n"),
-  updateOrientation(shoot),
-  updateCoordinate(shoot),
-  retract(hasArrow),
-  display_world,!.
-
-% $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-% if the spot has a stench and wumpus is dead:
-  % if there is no breeze: set it as a safe spot =>safety_update
-  % random move or random turn depending on which one is safe.
-run_agent([yes,no,_,no,_], Action):-
-  checkFront,
-  \+wumpusAlive,
-  \+hasArrow,
-  ignore((safety_update,false)),
-  random_walk(Action),
-  updateOrientation(Action),
-  updateCoordinate(Action),
-  display_world,!.
-% $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-
-run_agent([yes,no,_,no,_], Action):-
-  \+checkFront,
-  \+wumpusAlive,
-  \+hasArrow,
-  ignore((safety_update,false)),
-  random_turn(Action),
-  updateOrientation(Action),
-  updateCoordinate(Action),
-  display_world,!.
-% $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-
-% if the spot has a stench and wumpus is dead:
-  % if there is a breeze:Don't mark the spot as safe.
-  % random move or random turn depending on which one is safe.
-run_agent([yes,yes,_,no,_], Action):-
-  checkFront,
-  \+wumpusAlive,
-  \+hasArrow,
-  random_walk(Action),
-  updateOrientation(Action),
-  updateCoordinate(Action),
-  display_world,!.
-% $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-
-run_agent([yes,yes,_,no,_], Action):-
-  \+checkFront,
-  \+wumpusAlive,
-  \+hasArrow,
-  random_turn(Action),
-  updateOrientation(Action),
-  updateCoordinate(Action),
-  display_world,!.
-% $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-
-run_agent([no,no,no,no,no], Action):-
-  checkFront,
-  ignore((safety_update,false)),
-  random_walk(Action),
-  updateOrientation(Action),
-  updateCoordinate(Action),
-  display_world,!.
-% $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-
-run_agent([no,no,no,no,no], Action):-
-  \+checkFront,
-  ignore((safety_update,false)),
-  random_turn(Action),
-  updateOrientation(Action),
-  updateCoordinate(Action),
-  display_world,!.
-% $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-
-run_agent([_,_,_,yes,_], Action):-
-  format("bumped into wall \n"),
-  updateBump,
-  random_turn(Action),
-  updateOrientation(Action),
-  updateCoordinate(Action),
-  display_world,!.
-%===============================================
-% if you feel a breeze and it's safe to move forward,take it then :D
-run_agent([no,yes,no,no,no], goforward):-
-  checkFront,
-  format("Breeze + forward is safe => going forward \n"),
-  currentPos([X,Y]),
-  updateCoordinate(goforward),
-  display_world,!.
-%===============================================
-% if you sense a breeze and it's possible to die if you move forward,
-% turn away and go somewhere else
-run_agent([no,yes,no,no,no], Action):-
-  format("Breeze + forward is not safe => Turning Randomly \n"),
-  currentPos([X,Y]),
-  \+checkFront,
-  random_turn(Action),
-  updateOrientation(Action),
-  updateCoordinate(Action),
-  display_world,!.
-%===============================================
-
-%================================================
-updateBump:-
-  orientation(O),
-  retractall(currentPos(_)),
-  prevPos([X,Y]),
-  (O = 90 -> format("O is 90 \n"), YMAX is Y+1, retractall(ymax(WYES)), asserta(ymax(YMAX)); format("O is not 90 \n")),
-  (O = 0 -> format("O is 0 \n"), XMAX is X+1, retractall(xmax(EXES)), asserta(xmax(XMAX)); format("O is not 0 \n")),
-  assert(currentPos([X,Y])).
+changelocation(Action):-
+	cl(X,Y), X_L is X-1,X_R is X+1,Y_U is Y+1,Y_D is Y-1,
+        face(Angle),
+	((Action = turnright,retractall(face(_)),Angle = 0,Angle1 is 270,assert(face(Angle1)));
+	(Action = turnright,retractall(face(_)),Angle = 90,Angle1 is 0,assert(face(Angle1)));
+	(Action = turnright,retractall(face(_)),Angle = 180,Angle1 is 90,assert(face(Angle1)));
+	(Action = turnright,retractall(face(_)),Angle = 270,Angle1 is 180,assert(face(Angle1)));
+	(Action = turnleft,retractall(face(_)),Angle = 0,Angle1 is 90,assert(face(Angle1)));
+	(Action = turnleft,retractall(face(_)),Angle = 90,Angle1 is 180,assert(face(Angle1)));
+	(Action = turnleft,retractall(face(_)),Angle = 180,Angle1 is 270,assert(face(Angle1)));
+	(Action = turnleft,retractall(face(_)),Angle = 270,Angle1 is 0,assert(face(Angle1)));
+	(Action = goforward,retractall(cl(_,_)),retractall(pl(_,_)),Angle = 0,assert(cl(X_R,Y)),assert(pl(X,Y)));
+	(Action = goforward,retractall(cl(_,_)),retractall(pl(_,_)),Angle = 90,assert(cl(X,Y_U)),assert(pl(X,Y)));
+	(Action = goforward,retractall(cl(_,_)),retractall(pl(_,_)),Angle = 180,assert(cl(X_L,Y)),assert(pl(X,Y)));
+	(Action = goforward,retractall(cl(_,_)),retractall(pl(_,_)),Angle = 270,assert(cl(X,Y_D)),assert(pl(X,Y)));
+	(Action = grab);
+	(Action = climb);
+        (Action = shoot,retractall(arrow(_)),assert(arrow(0)))
+        ).
 
 
 
-%===============================================
+safe(X,Y):-
+	(safe1(X,Y);
+	(wumdie(0),nopit(X,Y),nowumpus(X,Y));
+        (wumdie(1),nopit(X,Y))).
 
-postion_calculator(X,Y,NewX,NewY,NextAction) :-
-  NextAction \= goforward,
-  NewX is X,
-  NewY is Y,!.
-%===============================================
+pit(X,Y):-
+	X_L is X-1,X_R is X+1,Y_U is Y+1,Y_D is Y-1,
+	(breeze(X_L, Y); X_L < 1),
+	(breeze(X_R, Y); X_R > 4),
+	(breeze(X, Y_U); Y_U > 4),
+	(breeze(X, Y_D); Y_D < 1).
 
-postion_calculator(X,Y,NewX,NewY,NextAction) :-
-  orientation(O),
-  O =:= 0,
-  NextAction = goforward,
-  NewX is X + 1,
-  NewY is Y,!.
-%===============================================
+wumpus(X, Y) :-
+	X_L is X-1,X_R is X+1,Y_U is Y+1,Y_D is Y-1,
+	(((stench(X_L,Y);X_L < 1),(stench(X_R, Y); X_R > 4));
+	((stench(X_L, Y); X_L < 1),(stench(X, Y_U); Y_U > 4));
+	((stench(X_L, Y); X_L < 1),(stench(X, Y_D); Y_D < 1));
+	((stench(X_R, Y); X_R > 4),(stench(X, Y_U); Y_U > 4));
+	((stench(X_R, Y); X_R > 4),(stench(X_R, Y); X_R > 4));
+	((stench(X_L, Y); X_L < 1),(stench(X, Y_D); Y_D < 1));
+	((stench(X, Y_U); Y_U > 4),(stench(X, Y_D); Y_D < 1))).
 
-postion_calculator(X,Y,NewX,NewY,NextAction) :-
-  orientation(O),
-  O =:= 90,
-  NextAction = goforward,
-  NewX is X,
-  NewY is Y + 1,!.
-%===============================================
 
-postion_calculator(X,Y,NewX,NewY,NextAction) :-
-  orientation(O),
-  O =:= 180,
-  NextAction = goforward,
-  NewX is X - 1,!,
-  NewY is Y.
-%===============================================
 
-postion_calculator(X,Y,NewX,NewY,NextAction) :-
-  orientation(O),
-  O =:= 270,
-  NextAction = goforward,
-  NewX is X,
-  NewY is Y - 1,!.
+action([no,no,_,_,_],_):-   
+	cl(X,Y),X_L is X-1,X_R is X+1,Y_U is Y+1,Y_D is Y-1,
+	((X_R<5,assert(safe1(X_R,Y)));
+	(Y_U<5,assert(safe1(X,Y_U)));
+	(X_L>0,assert(safe1(X_L,Y)));
+	(Y_D>0,assert(safe1(X,Y_D)))),
+        assert(safe1(X,Y)),
+	fail.
 
-%===============================================
 
-adjacent_squares([X,Y],[X1,Y]) :-
-  X1 is X-1.
-adjacent_squares([X,Y],[X1,Y]) :-
-  X1 is X+1.
-adjacent_squares([X,Y],[X,Y1]) :-
-  Y1 is Y-1.
-adjacent_squares([X,Y],[X,Y1]) :-
-  Y1 is Y+1.
-%===============================================
-assertOnce(Fact):-
-    \+( Fact ),!,
-    assert(Fact).
-assertOnce(_).
-%===============================================
+action([yes,_,_,_,_],_):-   
+	cl(X,Y),assert(stench(X,Y)),fail.
 
-safety_update :-
-  currentPos([X,Y]),
-  adjacent_squares([X,Y],[X1,Y1]),
-  assertOnce(safe([X1,Y1])),
-  format("Safe status has been updated \n"),
-  format("Asserting [~d,~d] \n",[X1,Y1]).
-%===============================================
-%===============================================
+action([_,yes,_,_,_],_):-   
+	cl(X,Y),assert(breeze(X,Y)),fail.
 
-checkFront:-
-  orientation(O),
-  xMax(XMAX),
-  yMax(YMAX),
-  O =:= 0,
-  currentPos([X,Y]),
-  X1 is X+1,
-  X+1 > 0,
-  X+1 < XMAX,
-  safe([X1,Y]).
-%===============================================
 
-checkFront:-
-  orientation(O),
-  xMax(XMAX),
-  yMax(YMAX),
-  O =:= 90 ,
-  currentPos([X,Y]),
-  Y1 is Y+1,
-  Y+1 < YMAX,
-  safe([X,Y1]).
-%===============================================
+action([_,_,_,_,yes],_):- 
+	retractall(wumdie(_)),  
+	assert(wumdie(1)),
+	cl(X,Y),
+	assert(safe1(X,Y)),
+	fail.
 
-checkFront:-
-  orientation(O),
-  xMax(XMAX),
-  yMax(YMAX),
-  O =:= 180,
-  currentPos([X,Y]),
-  X1 is X-1,
-  X-1 > 0,
-  X-1 < XMAX,
-  safe([X1,Y]).
-%===============================================
+action([_,no,_,_,_],_):-   
+        cl(X,Y),  
+	X_L is X-1,X_R is X+1,Y_U is Y+1,Y_D is Y-1,
+	((X_L>0,assert(nopit(X_L,Y)));
+	(X_R<5,assert(nopit(X_R,Y)));
+	(Y_D>0,assert(nopit(X,Y_D)));
+	(Y_U<5,assert(nopit(X,Y_U)))),
+	fail.
 
-checkFront:-
-  orientation(O),
-  xMax(XMAX),
-  yMax(YMAX),
-  O =:= 270,
-  currentPos([X,Y]),
-  Y1 is Y-1,
-  Y-1 > 0,
-  Y-1 < YMAX,
-  safe([X,Y1]).
-%===============================================
+action([no,_,_,_,_],_):-   
+        cl(X,Y),  
+	X_L is X-1,X_R is X+1,Y_U is Y+1,Y_D is Y-1,
+	((X_L>0,assert(nowumpus(X_L,Y)));
+	(X_R<5,assert(nowumpus(X_R,Y)));
+	(Y_D>0,assert(nowumpus(X,Y_D)));
+	(Y_U<5,assert(nowumpus(X,Y_U)))),
+	fail.
+
+action([_,_,yes,_,_],grab):-   %grab gold
+	gold(X),
+	retractall(gold(_)),
+	X1 is X+1,
+	assert(gold(X1)).
+
+action([_,_,_,_,_],climb):- 
+	cl(1,1),
+        samep(X),
+        X>10.
+
+action([yes,_,_,_,_],shoot):- 
+	arrow(1).
+
+
+action([_,_,_,_,no],shoot):-
+	wumdie(0),
+        arrow(1), 
+	cl(X,Y),
+	X_L is X-1,X_R is X+1,Y_U is Y+1,Y_D is Y-1,
+	face(Angle),
+	((Angle=0,wumpus(X_R,Y));
+	(Angle=90,wumpus(X,Y_U));
+	(Angle=180,wumpus(X_L,Y));
+	(Angle=270,wumpus(X,Y_D))).
+
+action([_,_,_,_,_],climb):-  
+	gold(X),
+	X>0,
+	cl(1,1).
+
+action([_,_,no,_,_],goforward):-  
+	cl(X,Y),X_L is X-1,X_R is X+1,Y_U is Y+1,Y_D is Y-1,
+	face(Angle),
+	((Angle=0,X <4,safe(X_R,Y));
+	(Angle=90,Y <4,safe(X,Y_U));
+	(Angle=180,X>1,safe(X_L,Y));
+	(Angle=270,Y>1,safe(X,Y_D))).
+
+
+action([_,_,_,_,_],Action):- 
+	random_between(0,1,R),
+	((R=0,Action = turnright);
+	(R=1,Action = turnleft)).
+
+action([_,_,_,yes,_],Action):- 
+	random_between(0,1,R),
+	pl(X,Y),
+	((R=0,Action = turnright);
+	(R=1,Action = turnleft)),
+	retractall(cl(_,_)),assert(cl(X,Y)).
+
