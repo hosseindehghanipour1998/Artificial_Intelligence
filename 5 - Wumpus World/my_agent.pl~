@@ -12,7 +12,7 @@
 :- dynamic (gold/1).
 :- dynamic(arrow/1).
 :- dynamic(currentLocation/2).
-:- dynamic(previous_location/2).
+:- dynamic(previous_location(_/2).
 :- dynamic(orientation/1).
 :- dynamic(is_wumpus_dead/1).
 :- dynamic(pit_free_cord/2).
@@ -26,8 +26,8 @@
 
 init_agent:-
 	format("Hello Welcome To Wumpus World ! "),
-	retractall(gold(_)),								%if has gold
-	retractall(arrow(_)),								%if has any arrows left
+	retractall(gold(_)), 								%if has gold 
+	retractall(arrow(_)),								%if has any arrows left 
 	retractall(currentLocation(_,_)),					%current location of agent
 	retractall(previous_location(_,_)),
 	retractall(orientation(_)),
@@ -41,21 +41,21 @@ init_agent:-
 	retractall(sameO(_)),
 
 	retractall(visited(_,_)),
-	assert(gold(0)),					 %record the number of golds obtained
-	assert(arrow(1)),					 %record the amount of the arrow
-	assert(currentLocation(1,1)),			 %record the current position of the agent
-	assert(previous_location(1,1)),							 %record the previous position of the agent
+	assert(gold(0)),       					 %record the number of golds obtained
+	assert(arrow(1)),      					 %record the amount of the arrow
+	assert(currentLocation(1,1)), 			 %record the current position of the agent
+	assert(previous_location(1,1)),  						 %record the previous position of the agent
 	assert(orientation(0)),
 	assert(is_wumpus_dead(0)),
 	assert(pit_free_cord(1,1)),
 	assert(wumpus_free_cord(1,1)),
 	assert(safeHouse(1,1)),
 	assert(breeze(-8,-8)),					% ?
-	assert(stench(-8,-8)),					% ?
+	assert(stench(-8,-8)),					% ?	
     assert(samep(0)),
 	assert(sameO(0)),
     assert(visited(1,1)),
-	initialize_file("a.txt","B").			 % Delete the file and create it again.
+	initialize_file("a.txt","B"). 			 % Delete the file and create it again.
 
 
 run_agent(Percept,Action):-
@@ -69,7 +69,7 @@ run_agent(Percept,Action):-
 	assert(safeHouse(X,Y)),
 	display_world,
 	action(Percept,Action),
-
+	
 	%% Taking a log
 	adding("("),
 	adding(X),
@@ -170,7 +170,7 @@ safe(X,Y):-
 	(is_wumpus_dead(0),pit_free_cord(X,Y),wumpus_free_cord(X,Y));
 	(is_wumpus_dead(1),pit_free_cord(X,Y))).
 
-% ================================================= Taking Actions according to situations
+% ================================================= Taking Actions according to situations 
 action([no,no,_,_,_],_):-
 
 	% Left_X -> Left X
@@ -273,7 +273,7 @@ action([_,_,_,yes,_],Action):-
 	((R=0,Action = turnright);
 	(R=1,Action = turnleft)),
 	retractall(currentLocation(_,_)),assert(currentLocation(X,Y)).
-% ================================================= Log Management
+% ================================================= Log Management 
 initialize_file(File, Text) :-
   open(File, write, Stream),
   write(Stream, Text), nl,
