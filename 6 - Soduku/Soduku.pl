@@ -79,11 +79,7 @@ checkAllColumns(Col1,Col2,Col3,Col4,Col5,Col6,Col7,Col8,Col9):-
     checkAColumn(Col9)
 .
 
-deepSearchSoduku([]).
-deepSearchSoduku([H|T]) :-
-    all_distinct(H),
-    deepSearchSoduku(T)
-.
+
 
 checkCubes([],[],[]).
 checkCubes([EL1,EL2,EL3|RestRow1],
@@ -101,7 +97,6 @@ puzzle(X) :-
     format("\n Solved The Table \n"),
     maplist(label,Table),
     maplist(portray_clause,Table)
-
 .
 
 sudoku_length(9).
@@ -119,6 +114,7 @@ example(1,Table) :-
     ].
 
 example(2,Table) :-
+    % This is a well-formed sudoku which means it has only one unique solution
     Table = [
         [_,_,_,_,_,_,2,_,_],
         [_,8,_,_,_,7,_,9,_],
