@@ -1,4 +1,16 @@
+% Dear TA :
+%   In order to run the code, Please call the "puzzle(N)" function.
+%   N : defines the number of the test case given below this code snippet mentioned as 
+%       "example(N)"
+%
+%
+%
+
+
+
 :- use_module(library(clpfd)).
+
+sudoku_length(9).
 
 sudoku(Rows) :-
     sudoku_length(Len),
@@ -54,12 +66,13 @@ sudoku(Rows) :-
     checkCubes(R7,R8,R9)
 .
 
+% Row Checking Functions
 checkRows([]).
 checkRows([H|T]) :-
     all_distinct(H),
     checkRows(T)
 .
-
+% Column Checking Functions
 checkAColumn(Column) :-
 	length(Column,9),
 	all_distinct(Column).
@@ -80,7 +93,7 @@ checkAllColumns(Col1,Col2,Col3,Col4,Col5,Col6,Col7,Col8,Col9):-
 .
 
 
-
+% Cubic Checking Functions
 checkCubes([],[],[]).
 checkCubes([EL1,EL2,EL3|RestRow1],
             [EL4,EL5,EL6|RestRow2],
@@ -88,7 +101,7 @@ checkCubes([EL1,EL2,EL3|RestRow1],
         all_distinct([EL1,EL2,EL3,EL4,EL5,EL6,EL7,EL8,EL9]),
         checkCubes(RestRow1,RestRow2,RestRow3).
 
-
+% Main
 puzzle(X) :-
     format("\n Entered The Puzzle \n"),
     example(X,Table),
@@ -99,8 +112,11 @@ puzzle(X) :-
     maplist(portray_clause,Table)
 .
 
-sudoku_length(9).
+
+% Test Cases
+
 example(1,Table) :-
+    % This testCase has many solutions.
     Table = [
       [1,_,6,_,9,_,_,_,7],
       [_,_,_,_,3,_,4,_,_],
