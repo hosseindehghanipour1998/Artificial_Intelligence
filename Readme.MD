@@ -10,7 +10,9 @@ I have been studying Artificial Intelligence on different embedded systems and p
 4. [Prolog Syntax Snippet](https://github.com/hosseindehghanipour1998/Artificial_Intelligence/tree/master/4%20-%20Prolog)
 5. [Wumpus World](https://github.com/hosseindehghanipour1998/Artificial_Intelligence/tree/master/5%20-%20Wumpus%20World)
 6. [Sudoku](https://github.com/hosseindehghanipour1998/Artificial_Intelligence/tree/master/6%20-%20Soduku)
-
+7. [Linear Regression](https://github.com/hosseindehghanipour1998/Artificial_Intelligence/tree/master/7%20-%20Linear%20Regression)
+8. [Weighted Linear Regression](https://github.com/hosseindehghanipour1998/Artificial_Intelligence/tree/master/8%20-%20Weighted%20Linear%20Regression)
+9. [Logistic Regression](https://github.com/hosseindehghanipour1998/Artificial_Intelligence/tree/master/9%20-%20Logistic%20Regression)
 # License
 This repository is released under [MIT License](https://opensource.org/licenses/MIT). To put it in a nutshell, This means that you can use the source codes in any opensource projects or contributions. Attribution is not mandatory but appreciated.
 
